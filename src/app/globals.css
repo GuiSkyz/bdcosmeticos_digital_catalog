@@ -1,26 +1,164 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================
+   BD COSMÉTICOS — Quiet Luxury Design System
+   ========================================== */
 
 @theme inline {
+  /* Font families */
+  --font-heading: var(--font-cinzel);
+  --font-sans: var(--font-montserrat);
+
+  /* Shadcn color tokens */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Custom BD palette */
+  --color-bd-cream: #FAF6F3;
+  --color-bd-salmon: #D2B4A3;
+  --color-bd-charcoal: #3D342F;
+  --color-bd-warm-gray: #8B7D76;
+  --color-bd-salmon-light: #E8D5C8;
+  --color-bd-salmon-dark: #B89A8A;
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #FFFFFF;
+  --foreground: #3D342F;
+  --card: #FAF6F3;
+  --card-foreground: #3D342F;
+  --popover: #FFFFFF;
+  --popover-foreground: #3D342F;
+  --primary: #3D342F;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FAF6F3;
+  --secondary-foreground: #3D342F;
+  --muted: #FAF6F3;
+  --muted-foreground: #8B7D76;
+  --accent: #D2B4A3;
+  --accent-foreground: #3D342F;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #D2B4A3;
+  --input: #E8D5C8;
+  --ring: #D2B4A3;
+  --chart-1: #D2B4A3;
+  --chart-2: #8B7D76;
+  --chart-3: #3D342F;
+  --chart-4: #FAF6F3;
+  --chart-5: #E8D5C8;
+  --radius: 0.75rem;
+  --sidebar: #FAF6F3;
+  --sidebar-foreground: #3D342F;
+  --sidebar-primary: #3D342F;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #D2B4A3;
+  --sidebar-accent-foreground: #3D342F;
+  --sidebar-border: #E8D5C8;
+  --sidebar-ring: #D2B4A3;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans antialiased;
+    scroll-behavior: smooth;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ==========================================
+   Custom Utilities & Animations
+   ========================================== */
+
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-cinzel), serif;
+  }
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Selection highlight */
+::selection {
+  background-color: #D2B4A3;
+  color: #FFFFFF;
+}
+
+/* Subtle grain texture overlay */
+.grain-overlay {
+  position: relative;
+}
+.grain-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Olfactory pyramid decorator */
+.pyramid-section {
+  position: relative;
+  padding-left: 1.5rem;
+}
+.pyramid-section::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #D2B4A3, transparent);
 }
