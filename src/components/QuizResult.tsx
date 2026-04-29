@@ -5,13 +5,50 @@ import { Sparkles, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Perfume } from "@/data/perfumes";
+import type { QuizAnswers } from "@/components/OlfactoryQuiz";
+import { urlFor } from "@/sanity/lib/image";
+
+// ==========================================
+// Mapeamento de labels para a justificativa
+// ==========================================
+
+const vibeLabels: Record<string, string> = {
+  elegante: "Elegância e Poder",
+  fresco: "Frescor e Energia",
+  misterioso: "Mistério e Sedução",
+  aconchegante: "Conforto e Aconchego",
+};
+
+const cenarioLabels: Record<string, string> = {
+  trabalho: "ambientes profissionais",
+  encontro: "momentos românticos",
+  passeio: "o dia a dia",
+  balada: "noites memoráveis",
+};
+
+const aromaLabels: Record<string, string> = {
+  citrico: "notas cítricas e frutadas",
+  floral: "buquês florais delicados",
+  amadeirado: "madeiras nobres e terrosas",
+  gourmand: "aromas doces e envolventes",
+};
+
+// ==========================================
+// Component
+// ==========================================
 
 interface QuizResultProps {
   perfume: Perfume;
+  answers?: QuizAnswers;
   onExploreDetails: () => void;
 }
 
-export function QuizResult({ perfume, onExploreDetails }: QuizResultProps) {
+export function QuizResult({ perfume, answers, onExploreDetails }: QuizResultProps) {
+  // Build justification text
+  const justification = answers
+    ? `Com base no seu desejo por ${vibeLabels[answers.vibe] ?? answers.vibe}, perfeito para ${cenarioLabels[answers.cenario] ?? answers.cenario}, e sua afinidade com ${aromaLabels[answers.aroma] ?? answers.aroma}, nossa curadoria selecionou:`
+    : null;
+
   return (
     <motion.section
       key="result"
@@ -49,10 +86,23 @@ export function QuizResult({ perfume, onExploreDetails }: QuizResultProps) {
             <h1 className="text-4xl md:text-5xl font-serif mb-2 text-bd-charcoal">
               {perfume.name}
             </h1>
-            <p className="text-xs text-bd-salmon uppercase tracking-[0.2em] font-bold mb-8">
+            <p className="text-xs text-bd-salmon uppercase tracking-[0.2em] font-bold mb-4">
               {perfume.brand}
             </p>
           </motion.div>
+
+          {/* Justification */}
+          {justification && (
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.45 }}
+              className="text-sm text-bd-warm-gray leading-relaxed font-light mb-8 
+                         border-l-4 border-bd-salmon pl-4 text-left mx-auto max-w-sm italic"
+            >
+              {justification}
+            </motion.p>
+          )}
 
           {/* Image */}
           <motion.div
@@ -64,7 +114,7 @@ export function QuizResult({ perfume, onExploreDetails }: QuizResultProps) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={perfume.visuals.imagePrompt}
+              src={perfume.image ? urlFor(perfume.image).width(500).url() : "/placeholder.png"}
               className="max-h-full mx-auto drop-shadow-lg"
               alt={perfume.name}
             />

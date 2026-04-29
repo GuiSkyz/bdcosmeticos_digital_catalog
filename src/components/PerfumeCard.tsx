@@ -1,14 +1,23 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ChevronRight, Clock, Wind } from "lucide-react";
+import { ChevronRight, Clock, Wind, Heart } from "lucide-react";
 import type { Perfume } from "@/data/perfumes";
+import { urlFor } from "@/sanity/lib/image";
 
 interface PerfumeCardProps {
   perfume: Perfume;
   onClick: () => void;
   index: number;
   layout?: "grid" | "list";
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
+}
+
+function formatPrice(value?: number) {
+  if (!value) return null;
+  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 export function PerfumeCard({
@@ -16,7 +25,13 @@ export function PerfumeCard({
   onClick,
   index,
   layout = "grid",
+  isFavorite = false,
+  onToggleFavorite,
 }: PerfumeCardProps) {
+  const imageUrl = perfume.image
+    ? urlFor(perfume.image).width(400).url()
+    : "/placeholder.png";
+
   if (layout === "list") {
     return (
       <motion.div
@@ -31,14 +46,14 @@ export function PerfumeCard({
         {/* Image */}
         <div
           className="w-20 h-24 md:w-24 md:h-28 flex-shrink-0 bg-bd-cream rounded-xl 
-                      p-3 flex items-center justify-center overflow-hidden"
+                      p-3 flex items-center justify-center overflow-hidden relative"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={perfume.visuals.imagePrompt}
-            className="max-h-full transition-transform duration-500 group-hover:scale-105"
+          <Image
+            src={imageUrl}
+            width={200}
+            height={250}
+            className="object-contain transition-transform duration-500 group-hover:scale-105"
             alt={perfume.name}
-            loading="lazy"
           />
         </div>
 
@@ -50,14 +65,37 @@ export function PerfumeCard({
                 {perfume.name}
               </h3>
               <p className="text-[9px] text-bd-salmon uppercase tracking-[0.2em] font-bold mt-0.5">
-                {perfume.brand} • {perfume.olfactory.family}
+                {perfume.brand}
+                {perfume.olfactoryFamily ? ` • ${perfume.olfactoryFamily}` : ""}
+                {perfume.concentracao ? ` • ${perfume.concentracao}` : ""}
               </p>
             </div>
-            <ChevronRight
-              size={18}
-              className="text-bd-salmon/40 group-hover:text-bd-salmon group-hover:translate-x-1 
-                         transition-all duration-300 flex-shrink-0 mt-1"
-            />
+            <div className="flex items-center gap-2 flex-shrink-0 mt-1">
+              {onToggleFavorite && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onToggleFavorite(perfume._id);
+                  }}
+                  className="p-1 cursor-pointer"
+                  aria-label={isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                >
+                  <Heart
+                    size={16}
+                    className={`transition-all duration-300 ${
+                      isFavorite
+                        ? "fill-bd-salmon text-bd-salmon"
+                        : "text-bd-salmon/30 hover:text-bd-salmon"
+                    }`}
+                  />
+                </button>
+              )}
+              <ChevronRight
+                size={18}
+                className="text-bd-salmon/40 group-hover:text-bd-salmon group-hover:translate-x-1 
+                           transition-all duration-300"
+              />
+            </div>
           </div>
 
           <p className="text-xs text-bd-warm-gray font-light leading-relaxed mt-2 line-clamp-2 hidden sm:block">
@@ -68,12 +106,17 @@ export function PerfumeCard({
           <div className="flex items-center gap-4 mt-2.5">
             <span className="inline-flex items-center gap-1 text-[10px] text-bd-warm-gray">
               <Clock size={11} className="text-bd-salmon/60" />
-              {perfume.performance.longevity}
+              {perfume.longevity ?? "—"}
             </span>
             <span className="inline-flex items-center gap-1 text-[10px] text-bd-warm-gray">
               <Wind size={11} className="text-bd-salmon/60" />
-              {perfume.performance.sillage}
+              {perfume.sillage ?? "—"}
             </span>
+            {perfume.preco && (
+              <span className="text-[11px] font-semibold text-bd-charcoal ml-auto">
+                {formatPrice(perfume.preco)}
+              </span>
+            )}
           </div>
         </div>
       </motion.div>
@@ -87,34 +130,63 @@ export function PerfumeCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
       onClick={onClick}
-      className="group cursor-pointer max-w-[260px] mx-auto w-full"
+      className="group cursor-pointer max-w-[260px] mx-auto w-full relative"
     >
-      {/* Image Container — compact vitrine */}
+      {/* Favorite button */}
+      {onToggleFavorite && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleFavorite(perfume._id);
+          }}
+          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm 
+                     flex items-center justify-center shadow-sm hover:shadow-md 
+                     transition-all duration-300 cursor-pointer"
+          aria-label={isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+        >
+          <Heart
+            size={14}
+            className={`transition-all duration-300 ${
+              isFavorite
+                ? "fill-bd-salmon text-bd-salmon"
+                : "text-bd-warm-gray group-hover:text-bd-salmon"
+            }`}
+          />
+        </button>
+      )}
+
+      {/* Image Container */}
       <div
         className="aspect-square bg-bd-cream rounded-xl overflow-hidden mb-3 p-4 
                     flex items-center justify-center transition-all duration-400
                     group-hover:shadow-lg border border-transparent group-hover:border-bd-salmon/20"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={perfume.visuals.imagePrompt}
+        <Image
+          src={imageUrl}
+          width={400}
+          height={400}
           className="max-h-[160px] object-contain transition-transform duration-500 ease-out group-hover:scale-105"
           alt={perfume.name}
-          loading="lazy"
         />
       </div>
 
-      {/* Info — compact */}
+      {/* Info */}
       <div>
         <h3 className="text-sm font-serif mb-0.5 text-bd-charcoal group-hover:text-bd-salmon transition-colors duration-300">
           {perfume.name}
         </h3>
         <p className="text-[8px] text-bd-salmon uppercase tracking-[0.2em] font-bold mb-1">
           {perfume.brand}
+          {perfume.concentracao ? ` • ${perfume.concentracao}` : ""}
         </p>
         <p className="text-[11px] text-bd-warm-gray line-clamp-2 font-light leading-snug">
           {perfume.shortDescription}
         </p>
+        {perfume.preco && (
+          <p className="text-xs font-semibold text-bd-charcoal mt-1.5">
+            {formatPrice(perfume.preco)}
+          </p>
+        )}
       </div>
     </motion.div>
   );
