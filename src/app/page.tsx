@@ -14,6 +14,7 @@ const PERFUMES_QUERY = `*[_type == "perfume"] | order(name asc) {
   image,
   gallery,
   genero,
+  tipo,
   concentracao,
   volumes,
   preco,
@@ -28,7 +29,8 @@ const PERFUMES_QUERY = `*[_type == "perfume"] | order(name asc) {
   quizVibe,
   quizCenario,
   quizPresenca,
-  quizAroma
+  quizAroma,
+  quizTipo
 }`;
 
 // GROQ — configurações do site (singleton)

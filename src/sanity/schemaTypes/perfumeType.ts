@@ -108,6 +108,20 @@ export const perfumeType = defineType({
       group: 'details',
     }),
     defineField({
+      name: 'tipo',
+      title: 'Tipo do Perfume',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Árabe', value: 'Árabe'},
+          {title: 'Importado', value: 'Importado'},
+          {title: 'Nacional', value: 'Nacional'},
+        ],
+        layout: 'radio',
+      },
+      group: 'details',
+    }),
+    defineField({
       name: 'concentracao',
       title: 'Concentração',
       type: 'string',
@@ -316,6 +330,22 @@ export const perfumeType = defineType({
           {title: 'Flores e Buquês', value: 'floral'},
           {title: 'Madeiras e Florestas', value: 'amadeirado'},
           {title: 'Doces e Gourmand', value: 'gourmand'},
+        ],
+        layout: 'radio',
+      },
+      group: 'quiz',
+    }),
+    defineField({
+      name: 'quizTipo',
+      title: 'Tipo Preferido (Quiz)',
+      description: 'Qual tipo de perfume se encaixa melhor no Quiz.',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Árabe', value: 'arabe'},
+          {title: 'Importado', value: 'importado'},
+          {title: 'Nacional', value: 'nacional'},
+          {title: 'Tanto Faz', value: 'tanto_faz'},
         ],
         layout: 'radio',
       },

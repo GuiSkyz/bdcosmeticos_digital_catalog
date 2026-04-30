@@ -1,8 +1,66 @@
 # Changelog — BD Cosméticos Digital Catalog
 
 > **Autor:** Tech Lead / Engenheiro de Software  
-> **Data:** 29 de Abril de 2026  
-> **Versão:** 2.0.0
+> **Última atualização:** 30 de Abril de 2026  
+> **Versão atual:** 2.1.0
+
+---
+
+## [2.1.0] — 2026-04-30 — Tipo do Perfume (Árabe / Importado / Nacional)
+
+### Adicionado
+
+#### Schema Sanity (`perfumeType.ts`)
+- **Campo `tipo`** — Radio com 3 opções: Árabe, Importado, Nacional (grupo "Detalhes do Produto")
+- **Campo `quizTipo`** — Radio com 4 opções: Árabe, Importado, Nacional, Tanto Faz (grupo "Tags do Quiz")
+
+#### Tipos TypeScript (`data/perfumes.ts`)
+- Novo tipo `TipoPerfume = "Árabe" | "Importado" | "Nacional"`
+- Novo tipo `QuizTipo = "arabe" | "importado" | "nacional" | "tanto_faz"`
+- Campo `tipo?: TipoPerfume` adicionado à interface `Perfume`
+- Campo `quizTipo?: QuizTipo` adicionado à interface `Perfume`
+
+#### GROQ Query (`app/page.tsx`)
+- Campos `tipo` e `quizTipo` incluídos na consulta de perfumes
+
+#### Quiz Olfativo (`OlfactoryQuiz.tsx`)
+- **5ª pergunta adicionada:** "Qual a origem do seu perfume ideal?"
+  - Opções: 🕌 Árabe, ✈️ Importado, 🇧🇷 Nacional, 🌍 Tanto Faz
+- Campo `tipo` adicionado à interface `QuizAnswers`
+- Algoritmo de scoring atualizado: peso 2 para match exato, peso 1 para "Tanto Faz"
+- Score máximo possível passou de 10 para 12
+
+#### Resultado do Quiz (`QuizResult.tsx`)
+- Labels de tipo adicionados (`tipoLabels`) para a justificativa
+- Texto da justificativa inclui preferência de origem
+
+#### Filtros do Catálogo (`CatalogApp.tsx`)
+- **Novo filtro "Tipo"** — Árabe / Importado / Nacional (botões pill)
+- Grid de filtros expandido para 3 colunas (Gênero, Tipo, Família)
+- Estado `filterTipo` com lógica de limpeza e acumulação
+
+#### Página de Detalhes (`ProductDetailPage.tsx`)
+- **Badge "Tipo"** com ícone 🌍 (Globe) exibido junto aos badges de Gênero/Concentração/Volume
+
+#### Card do Perfume (`PerfumeCard.tsx`)
+- Tipo exibido na linha de subtítulo (ex: `Marca • Árabe • EDP`) nos dois layouts (grid e list)
+
+### Arquivos Alterados
+
+| Arquivo | Alteração |
+|---------|-----------|
+| `src/sanity/schemaTypes/perfumeType.ts` | +2 campos (`tipo`, `quizTipo`) |
+| `src/data/perfumes.ts` | +2 tipos, +2 campos na interface |
+| `src/app/page.tsx` | +2 campos na GROQ query |
+| `src/components/OlfactoryQuiz.tsx` | +1 pergunta, scoring atualizado |
+| `src/components/QuizResult.tsx` | +labels de tipo, justificativa |
+| `src/components/CatalogApp.tsx` | +filtro Tipo, grid 3 colunas |
+| `src/components/ProductDetailPage.tsx` | +badge Tipo com ícone Globe |
+| `src/components/PerfumeCard.tsx` | +tipo no subtítulo (grid e list) |
+
+---
+
+## [2.0.0] — 2026-04-29 — Catálogo Profissional
 
 ---
 

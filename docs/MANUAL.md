@@ -1,6 +1,6 @@
 # Manual do Catálogo Digital — BD Cosméticos
 
-> **Versão:** 2.0.0  
+> **Versão:** 2.1.0  
 > **Tecnologias:** Next.js 16, TypeScript, Sanity CMS, Tailwind CSS  
 > **Público-alvo:** Desenvolvedores que irão dar manutenção no projeto
 
@@ -80,7 +80,7 @@ src/
 │   ├── HeroSection.tsx      ← Seção de destaque com CTA
 │   ├── PerfumeCard.tsx      ← Card do perfume (grid e list)
 │   ├── ProductDetailPage.tsx← Página de detalhes completa (PDP)
-│   ├── OlfactoryQuiz.tsx    ← Quiz de 4 perguntas
+│   ├── OlfactoryQuiz.tsx    ← Quiz de 5 perguntas
 │   ├── QuizResult.tsx       ← Resultado do quiz
 │   ├── Footer.tsx           ← Rodapé
 │   └── ui/                  ← Componentes base (shadcn/ui)
@@ -114,10 +114,10 @@ Cada perfume no CMS tem **5 abas** no editor:
 | Aba | Campos |
 |-----|--------|
 | **Informações Básicas** | Nome, Marca, Slug, Tagline, Descrição Curta, Descrição Completa, Foto Principal, Galeria |
-| **Detalhes do Produto** | Gênero (radio), Concentração (radio), Volumes (multi-select), Preço |
+| **Detalhes do Produto** | Gênero (radio), Tipo (radio: Árabe/Importado/Nacional), Concentração (radio), Volumes (multi-select), Preço |
 | **Pirâmide Olfativa** | Família Olfativa (dropdown), Notas de Topo/Coração/Fundo (referências) |
 | **Performance** | Fixação (radio), Projeção (radio), Ocasião (dropdown), Estação (dropdown) |
-| **Tags do Quiz** | Vibe, Cenário, Presença, Aroma (todos radio) |
+| **Tags do Quiz** | Vibe, Cenário, Presença, Aroma, Tipo Preferido (todos radio) |
 
 ### 4.2. Nota Olfativa (`notaOlfativaType`)
 
@@ -181,6 +181,7 @@ Gerencia 4 estados de view:
 **Funcionalidades:**
 - Busca por texto (nome, marca, família)
 - Filtro por gênero (Masculino/Feminino/Unissex)
+- Filtro por tipo (Árabe/Importado/Nacional)
 - Filtro por família olfativa
 - Filtro de favoritos
 - Toggle entre Grid e Lista
@@ -191,14 +192,14 @@ Dois layouts:
 - **Grid**: Card vertical com imagem quadrada
 - **List**: Card horizontal estilo lista
 
-Exibe: nome, marca, concentração, preço, fixação, projeção.  
+Exibe: nome, marca, tipo (Árabe/Importado/Nacional), concentração, preço, fixação, projeção.  
 Tem botão de favoritar (coração).
 
 ### 6.3. `ProductDetailPage.tsx` — PDP
 
 A página mais rica do catálogo:
 - Galeria de imagens com thumbnails
-- Tags visuais (gênero, concentração, volume)
+- Tags visuais (gênero, tipo, concentração, volume)
 - Preço em destaque
 - Pirâmide olfativa (notas como badges)
 - Performance grid (fixação, projeção, ocasião, estação)
@@ -210,7 +211,7 @@ A página mais rica do catálogo:
 
 ## 7. Quiz Olfativo — Como Funciona
 
-### Perguntas (4 passos):
+### Perguntas (5 passos):
 
 | Passo | Pergunta | Dimensão |
 |-------|----------|----------|
@@ -218,23 +219,26 @@ A página mais rica do catálogo:
 | 2 | "Para qual momento?" | Cenário (ocasião) |
 | 3 | "Qual a sua assinatura?" | Presença (projeção) |
 | 4 | "Qual aroma te atrai?" | Aroma (família) |
+| 5 | "Qual a origem do seu perfume ideal?" | Tipo (origem) |
 
 ### Algoritmo de Scoring
 
 ```
 Para cada perfume:
   score = 0
-  Se quizVibe == resposta.vibe      → score += 3 (peso alto)
-  Se quizCenario == resposta.cenario → score += 2
+  Se quizVibe == resposta.vibe        → score += 3 (peso alto)
+  Se quizCenario == resposta.cenario  → score += 2
   Se quizPresenca == resposta.presenca → score += 2
-  Se quizAroma == resposta.aroma    → score += 3 (peso alto)
+  Se quizAroma == resposta.aroma      → score += 3 (peso alto)
+  Se quizTipo == resposta.tipo        → score += 2 (match exato)
+  Se resposta.tipo == "tanto_faz"     → score += 1 (bônus parcial)
 
 Retorna o perfume com maior score.
-Score máximo possível: 10
+Score máximo possível: 12
 ```
 
 **Para que o quiz funcione:**
-Cada perfume precisa ter os 4 campos de quiz preenchidos no Sanity (aba "Tags do Quiz").
+Cada perfume precisa ter os 5 campos de quiz preenchidos no Sanity (aba "Tags do Quiz").
 
 ---
 
@@ -269,6 +273,7 @@ A busca é **client-side** — filtra a lista de perfumes já carregada em memó
 
 ### Filtros
 - **Gênero**: Masculino, Feminino, Unissex (apenas 1 por vez)
+- **Tipo**: Árabe, Importado, Nacional (apenas 1 por vez)
 - **Família Olfativa**: 10 opções (apenas 1 por vez)
 - **Favoritos**: Toggle que mostra só os perfumes curtidos
 
@@ -283,10 +288,10 @@ Filtros são **cumulativos** — busca + gênero + família funcionam juntos.
 3. Clique em **"+"** para criar novo
 4. Preencha as 5 abas:
    - **Básicas**: Nome, Marca, clique em "Generate" no Slug, descrições, foto principal
-   - **Detalhes**: Gênero, Concentração, Volumes, Preço
+   - **Detalhes**: Gênero, **Tipo (Árabe/Importado/Nacional)**, Concentração, Volumes, Preço
    - **Pirâmide**: Selecione as notas (se a nota não existir, crie em "Notas Olfativas" primeiro)
    - **Performance**: Fixação, Projeção, Ocasião, Estação
-   - **Quiz**: Preencha os 4 campos de quiz (necessário para o quiz funcionar)
+   - **Quiz**: Preencha os 5 campos de quiz — Vibe, Cenário, Presença, Aroma e **Tipo Preferido** (necessário para o quiz funcionar)
 5. Clique em **Publish**
 
 > **Dica:** Se a nota olfativa que você precisa não existe, vá em "Notas Olfativas" no menu lateral e crie antes.

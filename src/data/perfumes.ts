@@ -32,6 +32,7 @@ export type Projecao = "Discreta" | "Moderada" | "Marcante" | "Intensa";
 export type Estacao = "Verão" | "Primavera" | "Outono" | "Inverno" | "Versátil";
 export type Ocasiao = "Dia a Dia" | "Trabalho" | "Encontro" | "Formal" | "Balada" | "Assinatura";
 export type Genero = "Masculino" | "Feminino" | "Unissex";
+export type TipoPerfume = "Árabe" | "Importado" | "Nacional";
 export type Concentracao = "EDC" | "EDT" | "EDP" | "Parfum";
 
 // --- Quiz Enums ---
@@ -39,6 +40,7 @@ export type QuizVibe = "elegante" | "fresco" | "misterioso" | "aconchegante";
 export type QuizCenario = "trabalho" | "encontro" | "passeio" | "balada";
 export type QuizPresenca = "intima" | "moderada" | "avassaladora";
 export type QuizAroma = "citrico" | "floral" | "amadeirado" | "gourmand";
+export type QuizTipo = "arabe" | "importado" | "nacional" | "tanto_faz";
 
 export interface Perfume {
   _id: string;
@@ -53,6 +55,7 @@ export interface Perfume {
 
   // Detalhes do produto
   genero?: Genero;
+  tipo?: TipoPerfume;
   concentracao?: Concentracao;
   volumes?: string[];
   preco?: number;
@@ -69,9 +72,10 @@ export interface Perfume {
   occasion?: Ocasiao;
   season?: Estacao;
 
-  // Quiz tags (4 dimensões)
+  // Quiz tags (5 dimensões)
   quizVibe?: QuizVibe;
   quizCenario?: QuizCenario;
   quizPresenca?: QuizPresenca;
   quizAroma?: QuizAroma;
+  quizTipo?: QuizTipo;
 }

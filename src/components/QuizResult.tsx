@@ -33,6 +33,13 @@ const aromaLabels: Record<string, string> = {
   gourmand: "aromas doces e envolventes",
 };
 
+const tipoLabels: Record<string, string> = {
+  arabe: "perfumaria árabe",
+  importado: "fragrâncias importadas",
+  nacional: "perfumaria nacional",
+  tanto_faz: "qualquer origem",
+};
+
 // ==========================================
 // Component
 // ==========================================
@@ -46,7 +53,7 @@ interface QuizResultProps {
 export function QuizResult({ perfume, answers, onExploreDetails }: QuizResultProps) {
   // Build justification text
   const justification = answers
-    ? `Com base no seu desejo por ${vibeLabels[answers.vibe] ?? answers.vibe}, perfeito para ${cenarioLabels[answers.cenario] ?? answers.cenario}, e sua afinidade com ${aromaLabels[answers.aroma] ?? answers.aroma}, nossa curadoria selecionou:`
+    ? `Com base no seu desejo por ${vibeLabels[answers.vibe] ?? answers.vibe}, perfeito para ${cenarioLabels[answers.cenario] ?? answers.cenario}, sua afinidade com ${aromaLabels[answers.aroma] ?? answers.aroma} e preferência por ${tipoLabels[answers.tipo] ?? "qualquer origem"}, nossa curadoria selecionou:`
     : null;
 
   return (

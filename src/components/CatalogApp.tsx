@@ -28,6 +28,7 @@ type DisplayMode = "grid" | "list";
 
 // Filter options
 const GENERO_OPTIONS = ["Masculino", "Feminino", "Unissex"] as const;
+const TIPO_OPTIONS = ["Árabe", "Importado", "Nacional"] as const;
 const FAMILY_OPTIONS = [
     "Amadeirado", "Cítrico", "Floral", "Fougère", "Frutal",
     "Gourmand", "Oriental", "Aromático", "Aquático", "Chipre",
@@ -44,6 +45,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [showFilters, setShowFilters] = useState(false);
     const [filterGenero, setFilterGenero] = useState<string | null>(null);
+    const [filterTipo, setFilterTipo] = useState<string | null>(null);
     const [filterFamily, setFilterFamily] = useState<string | null>(null);
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
@@ -70,6 +72,11 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
             result = result.filter((p) => p.genero === filterGenero);
         }
 
+        // Tipo
+        if (filterTipo) {
+            result = result.filter((p) => p.tipo === filterTipo);
+        }
+
         // Família Olfativa
         if (filterFamily) {
             result = result.filter((p) => p.olfactoryFamily === filterFamily);
@@ -81,12 +88,13 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
         }
 
         return result;
-    }, [perfumes, searchQuery, filterGenero, filterFamily, showFavoritesOnly, isFavorite]);
+    }, [perfumes, searchQuery, filterGenero, filterTipo, filterFamily, showFavoritesOnly, isFavorite]);
 
-    const hasActiveFilters = !!filterGenero || !!filterFamily || showFavoritesOnly;
+    const hasActiveFilters = !!filterGenero || !!filterTipo || !!filterFamily || showFavoritesOnly;
 
     const clearFilters = () => {
         setFilterGenero(null);
+        setFilterTipo(null);
         setFilterFamily(null);
         setShowFavoritesOnly(false);
         setSearchQuery("");
@@ -254,7 +262,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                 transition={{ duration: 0.3 }}
                                                 className="overflow-hidden"
                                             >
-                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 p-4 bg-bd-cream/40 rounded-2xl border border-bd-salmon/10">
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 p-4 bg-bd-cream/40 rounded-2xl border border-bd-salmon/10">
                                                     {/* Gênero */}
                                                     <div>
                                                         <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray font-bold block mb-2">
@@ -273,6 +281,29 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                                         }`}
                                                                 >
                                                                     {g}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Tipo */}
+                                                    <div>
+                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray font-bold block mb-2">
+                                                            Tipo
+                                                        </label>
+                                                        <div className="flex flex-wrap gap-2">
+                                                            {TIPO_OPTIONS.map((t) => (
+                                                                <button
+                                                                    key={t}
+                                                                    onClick={() => setFilterTipo(filterTipo === t ? null : t)}
+                                                                    className={`px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-bold border
+                                                                               transition-all duration-200 cursor-pointer
+                                                                               ${filterTipo === t
+                                                                            ? "bg-bd-salmon text-white border-bd-salmon"
+                                                                            : "bg-white text-bd-charcoal border-bd-salmon/20 hover:border-bd-salmon"
+                                                                        }`}
+                                                                >
+                                                                    {t}
                                                                 </button>
                                                             ))}
                                                         </div>

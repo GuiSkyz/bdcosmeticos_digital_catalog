@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, Sparkles, Heart, MapPin, Volume2, Flower2, ArrowLeft } from "lucide-react";
+import { ChevronRight, Sparkles, Heart, MapPin, Volume2, Flower2, ArrowLeft, Globe } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Perfume } from "@/data/perfumes";
 
@@ -20,6 +20,7 @@ export interface QuizAnswers {
   cenario: string;
   presenca: string;
   aroma: string;
+  tipo: string;
 }
 
 interface QuizQuestion {
@@ -157,6 +158,38 @@ const questions: QuizQuestion[] = [
     ],
     key: "aroma",
   },
+  {
+    title: "Qual a origem do seu perfume ideal?",
+    subtitle: "Cada origem traz uma alma diferente",
+    icon: Globe,
+    options: [
+      {
+        label: "Árabe",
+        description: "Oud, âmbar, especiarias — opulência oriental",
+        value: "arabe",
+        emoji: "🕌",
+      },
+      {
+        label: "Importado",
+        description: "Marcas internacionais, sofisticação global",
+        value: "importado",
+        emoji: "✈️",
+      },
+      {
+        label: "Nacional",
+        description: "Brasilidade, qualidade e ótimo custo-benefício",
+        value: "nacional",
+        emoji: "🇧🇷",
+      },
+      {
+        label: "Tanto Faz",
+        description: "O que importa é a fragrância, não a origem",
+        value: "tanto_faz",
+        emoji: "🌍",
+      },
+    ],
+    key: "tipo",
+  },
 ];
 
 // ==========================================
@@ -182,6 +215,13 @@ function findBestMatch(perfumes: Perfume[], answers: QuizAnswers): Perfume {
     // Aroma match (peso 3 — tão importante quanto a vibe)
     if (perfume.quizAroma === answers.aroma) score += 3;
 
+    // Tipo match (peso 2 — preferência de origem)
+    if (answers.tipo === "tanto_faz" || perfume.quizTipo === "tanto_faz") {
+      score += 1; // bônus parcial se "tanto faz"
+    } else if (perfume.quizTipo === answers.tipo) {
+      score += 2;
+    }
+
     if (score > bestScore) {
       bestScore = score;
       bestPerfume = perfume;
@@ -202,6 +242,7 @@ export function OlfactoryQuiz({ perfumes, onComplete }: OlfactoryQuizProps) {
     cenario: "",
     presenca: "",
     aroma: "",
+    tipo: "",
   });
 
   const handleSelect = (value: string) => {

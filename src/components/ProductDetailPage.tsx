@@ -16,6 +16,7 @@ import {
   User,
   Beaker,
   Package,
+  Globe,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -288,6 +289,12 @@ export function ProductDetailPage({
                 <Badge variant="outline" className="border-bd-salmon/20 bg-bd-cream/60 text-bd-charcoal rounded-full px-3 py-1 h-auto text-[10px] font-bold tracking-wider uppercase">
                   <User size={10} className="mr-1.5" />
                   {perfume.genero}
+                </Badge>
+              )}
+              {perfume.tipo && (
+                <Badge variant="outline" className="border-bd-salmon/20 bg-bd-cream/60 text-bd-charcoal rounded-full px-3 py-1 h-auto text-[10px] font-bold tracking-wider uppercase">
+                  <Globe size={10} className="mr-1.5" />
+                  {perfume.tipo}
                 </Badge>
               )}
               {perfume.concentracao && (

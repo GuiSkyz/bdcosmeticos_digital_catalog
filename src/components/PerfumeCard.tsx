@@ -66,6 +66,7 @@ export function PerfumeCard({
               </h3>
               <p className="text-[9px] text-bd-salmon uppercase tracking-[0.2em] font-bold mt-0.5">
                 {perfume.brand}
+                {perfume.tipo ? ` • ${perfume.tipo}` : ""}
                 {perfume.olfactoryFamily ? ` • ${perfume.olfactoryFamily}` : ""}
                 {perfume.concentracao ? ` • ${perfume.concentracao}` : ""}
               </p>
@@ -177,6 +178,7 @@ export function PerfumeCard({
         </h3>
         <p className="text-[8px] text-bd-salmon uppercase tracking-[0.2em] font-bold mb-1">
           {perfume.brand}
+          {perfume.tipo ? ` • ${perfume.tipo}` : ""}
           {perfume.concentracao ? ` • ${perfume.concentracao}` : ""}
         </p>
         <p className="text-[11px] text-bd-warm-gray line-clamp-2 font-light leading-snug">
