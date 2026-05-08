@@ -2,7 +2,25 @@
 
 > **Autor:** Tech Lead / Engenheiro de Software  
 > **Última atualização:** 30 de Abril de 2026  
-> **Versão atual:** 2.1.0
+> **Versão atual:** 2.2.0
+
+---
+
+## [2.2.0] — 2026-05-08 — Refatoração de Variações e Marcas
+
+### Adicionado / Modificado
+
+#### Schema Sanity (`perfumeType.ts`, `brandType.ts`)
+- **Novo Documento `brandType.ts`**: Marcas agora são documentos referenciáveis (evita erros de digitação na hora de preencher).
+- **Campo `brand` em Perfume**: Agora é uma referência (`reference`) e não texto livre.
+- **Refatoração de Preços**: Remoção de `volumes` e `preco` avulsos, substituídos por `variations`.
+- **Nova Estrutura `variations`**: Permite cadastrar múltiplas opções para o mesmo perfume, cada variação tendo seu `volume`, `preco` e `status` (Pronta Entrega, Sob Encomenda, Esgotado).
+- **Flags de Destaque**: Adição dos campos `isFeatured` e `isNewRelease` para organizar vitrines.
+
+#### Frontend e Queries (`data/perfumes.ts`, `page.tsx`, Componentes)
+- **GROQ Query**: Puxa as `variations` e dereferencia a marca com `"brand": brand->name` para não quebrar componentes existentes.
+- **Cartão do Produto (`PerfumeCard.tsx`)**: Agora exibe o preço no formato "A partir de R$ XX,XX".
+- **Página do Produto (`ProductDetailPage.tsx`)**: Lista todas as variações de volume e preço, exibindo tags dinâmicas de "Esgotado" ou "Sob Encomenda" com base no status da variação.
 
 ---
 
