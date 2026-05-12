@@ -63,9 +63,9 @@ export interface Perfume {
 
   // Olfactory (dereferenced notes)
   olfactoryFamily?: string;
-  topNotes?: NotaOlfativa[];
-  heartNotes?: NotaOlfativa[];
-  baseNotes?: NotaOlfativa[];
+  topNotes?: (NotaOlfativa | string)[];
+  heartNotes?: (NotaOlfativa | string)[];
+  baseNotes?: (NotaOlfativa | string)[];
 
   // Performance (padronizado)
   longevity?: Fixacao;
