@@ -425,7 +425,7 @@ export const perfumeType = defineType({
   preview: {
     select: {
       title: 'name',
-      subtitle: 'brand',
+      subtitle: 'brand.name',
       media: 'image',
     },
   },
