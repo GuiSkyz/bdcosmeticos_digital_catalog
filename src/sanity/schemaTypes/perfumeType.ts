@@ -249,21 +249,30 @@ export const perfumeType = defineType({
       name: 'topNotes',
       title: 'Notas de Topo',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'notaOlfativa'}]}],
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
       group: 'olfactory',
     }),
     defineField({
       name: 'heartNotes',
       title: 'Notas de Coração',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'notaOlfativa'}]}],
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
       group: 'olfactory',
     }),
     defineField({
       name: 'baseNotes',
       title: 'Notas de Fundo',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'notaOlfativa'}]}],
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
       group: 'olfactory',
     }),
 

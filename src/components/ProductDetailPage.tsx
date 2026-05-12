@@ -303,19 +303,31 @@ export function ProductDetailPage({
                   {CONCENTRATION_LABELS[perfume.concentracao] ?? perfume.concentracao}
                 </Badge>
               )}
-              {perfume.volumes && perfume.volumes.length > 0 && (
+              {perfume.variations && perfume.variations.length > 0 && (
                 <Badge variant="outline" className="border-bd-salmon/20 bg-bd-cream/60 text-bd-charcoal rounded-full px-3 py-1 h-auto text-[10px] font-bold tracking-wider uppercase">
                   <Package size={10} className="mr-1.5" />
-                  {perfume.volumes.join(" / ")}
+                  {perfume.variations.map(v => v.volume).join(" / ")}
                 </Badge>
               )}
             </div>
 
             {/* Price */}
-            {perfume.preco && (
-              <p className="text-2xl font-serif text-bd-charcoal mb-6">
-                {formatPrice(perfume.preco)}
-              </p>
+            {perfume.variations && perfume.variations.length > 0 && (
+              <div className="mb-6 flex flex-col gap-2">
+                {perfume.variations.map((v, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="text-lg font-serif text-bd-charcoal">{v.volume}</span>
+                    <span className="text-bd-warm-gray">—</span>
+                    <span className="text-xl font-serif text-bd-charcoal">{formatPrice(v.preco)}</span>
+                    {v.status === 'esgotado' && (
+                      <Badge variant="outline" className="text-[9px] text-red-500 border-red-200">Esgotado</Badge>
+                    )}
+                    {v.status === 'sob_encomenda' && (
+                      <Badge variant="outline" className="text-[9px] text-amber-500 border-amber-200">Sob Encomenda</Badge>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
           </motion.div>
 
@@ -417,12 +429,14 @@ export function ProductDetailPage({
                   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
                 )
               }
-              className="w-full bg-bd-charcoal text-white py-6 h-auto rounded-2xl text-xs uppercase 
-                         tracking-[0.2em] font-bold hover:bg-bd-salmon shadow-xl transition-all 
-                         duration-300 hover:shadow-2xl cursor-pointer"
+              className="w-full bg-bd-charcoal text-white py-4 sm:py-6 px-4 h-auto rounded-2xl 
+                         text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-[0.2em] 
+                         font-bold hover:bg-bd-salmon shadow-xl transition-all 
+                         duration-300 hover:shadow-2xl cursor-pointer 
+                         whitespace-normal text-center leading-relaxed"
             >
-              <Send size={14} className="mr-2" />
-              Consultar Disponibilidade via WhatsApp
+              <Send size={16} className="mr-2 flex-shrink-0" />
+              <span>Consultar Disponibilidade via WhatsApp</span>
             </Button>
           </motion.div>
         </div>

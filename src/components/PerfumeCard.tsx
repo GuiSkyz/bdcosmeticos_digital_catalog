@@ -113,9 +113,9 @@ export function PerfumeCard({
               <Wind size={11} className="text-bd-salmon/60" />
               {perfume.sillage ?? "—"}
             </span>
-            {perfume.preco && (
+            {perfume.variations && perfume.variations.length > 0 && (
               <span className="text-[11px] font-semibold text-bd-charcoal ml-auto">
-                {formatPrice(perfume.preco)}
+                A partir de {formatPrice(perfume.variations[0].preco)}
               </span>
             )}
           </div>
@@ -184,9 +184,9 @@ export function PerfumeCard({
         <p className="text-[11px] text-bd-warm-gray line-clamp-2 font-light leading-snug">
           {perfume.shortDescription}
         </p>
-        {perfume.preco && (
+        {perfume.variations && perfume.variations.length > 0 && (
           <p className="text-xs font-semibold text-bd-charcoal mt-1.5">
-            {formatPrice(perfume.preco)}
+            A partir de {formatPrice(perfume.variations[0].preco)}
           </p>
         )}
       </div>
