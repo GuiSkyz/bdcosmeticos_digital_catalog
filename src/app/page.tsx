@@ -2,6 +2,8 @@ import { client } from "@/sanity/lib/client";
 import { CatalogApp } from "@/components/CatalogApp";
 import type { Perfume, SiteSettings } from "@/data/perfumes";
 
+export const revalidate = 60; // Revalidate the page every 60 seconds
+
 // GROQ — perfumes com notas dereferenciadas e novos campos
 const PERFUMES_QUERY = `*[_type == "perfume"] | order(name asc) {
   _id,
