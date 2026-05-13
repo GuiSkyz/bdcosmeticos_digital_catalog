@@ -29,7 +29,7 @@ export function PerfumeCard({
   onToggleFavorite,
 }: PerfumeCardProps) {
   const imageUrl = perfume.image
-    ? urlFor(perfume.image).width(400).url()
+    ? urlFor(perfume.image).width(400).height(500).url()
     : "/placeholder.png";
 
   if (layout === "list") {
@@ -45,14 +45,14 @@ export function PerfumeCard({
       >
         {/* Image */}
         <div
-          className="w-20 h-24 md:w-24 md:h-28 flex-shrink-0 bg-bd-cream rounded-xl 
-                      p-3 flex items-center justify-center overflow-hidden relative"
+          className="w-20 h-24 md:w-24 md:h-[120px] flex-shrink-0 bg-bd-cream rounded-xl 
+                      overflow-hidden relative"
         >
           <Image
             src={imageUrl}
-            width={200}
-            height={250}
-            className="object-contain transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="100px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             alt={perfume.name}
           />
         </div>
@@ -158,15 +158,15 @@ export function PerfumeCard({
 
       {/* Image Container */}
       <div
-        className="aspect-square bg-bd-cream rounded-xl overflow-hidden mb-3 p-4 
-                    flex items-center justify-center transition-all duration-400
-                    group-hover:shadow-lg border border-transparent group-hover:border-bd-salmon/20"
+        className="aspect-[4/5] bg-bd-cream rounded-xl overflow-hidden mb-3 relative
+                    transition-all duration-400 group-hover:shadow-lg 
+                    border border-transparent group-hover:border-bd-salmon/20"
       >
         <Image
           src={imageUrl}
-          width={400}
-          height={400}
-          className="max-h-[160px] object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+          fill
+          sizes="(max-width: 768px) 50vw, 260px"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           alt={perfume.name}
         />
       </div>
