@@ -30,7 +30,7 @@ export function PerfumeCard({
 }: PerfumeCardProps) {
   const imageUrl = perfume.image
     ? urlFor(perfume.image).width(400).height(500).url()
-    : "/placeholder.png";
+    : "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjRkFGN0Y1Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmaWxsPSIjMUMxQTE3IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+U2VtIEZvdG88L3RleHQ+PC9zdmc+";
 
   if (layout === "list") {
     return (

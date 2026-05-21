@@ -341,12 +341,13 @@ export const perfumeType = defineType({
       group: 'performance',
     }),
 
-    // ─── QUIZ OLFATIVO (4 Dimensões) ────────────────────────
+    // ─── QUIZ OLFATIVO (5 Dimensões — Multi-valor) ────────────
     defineField({
       name: 'quizVibe',
-      title: 'Vibe (Quiz)',
-      description: 'Qual sentimento o perfume evoca?',
-      type: 'string',
+      title: 'Vibes (Quiz)',
+      description: 'Quais sentimentos o perfume evoca? Marque todos que se aplicam.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Elegante e Poderoso(a)', value: 'elegante'},
@@ -354,15 +355,15 @@ export const perfumeType = defineType({
           {title: 'Misterioso(a) e Sedutor(a)', value: 'misterioso'},
           {title: 'Aconchegante e Confortável', value: 'aconchegante'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizCenario',
-      title: 'Cenário (Quiz)',
-      description: 'Qual o melhor cenário para este perfume?',
-      type: 'string',
+      title: 'Cenários (Quiz)',
+      description: 'Quais cenários combinam com este perfume? Marque todos.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Trabalho', value: 'trabalho'},
@@ -370,30 +371,30 @@ export const perfumeType = defineType({
           {title: 'Passeio / Dia a Dia', value: 'passeio'},
           {title: 'Balada / Festa', value: 'balada'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizPresenca',
       title: 'Presença (Quiz)',
-      description: 'Nível de projeção do perfume no Quiz.',
-      type: 'string',
+      description: 'Níveis de projeção que descrevem este perfume. Marque todos.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Íntima — Só quem abraça sente', value: 'intima'},
           {title: 'Moderada — Rastro sutil', value: 'moderada'},
           {title: 'Avassaladora — Sente antes de ver', value: 'avassaladora'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizAroma',
-      title: 'Aroma Principal (Quiz)',
-      description: 'Família aromática simplificada para o Quiz.',
-      type: 'string',
+      title: 'Aromas (Quiz)',
+      description: 'Famílias aromáticas simplificadas. Marque todas que se aplicam.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Cítricos e Frutas', value: 'citrico'},
@@ -401,15 +402,15 @@ export const perfumeType = defineType({
           {title: 'Madeiras e Florestas', value: 'amadeirado'},
           {title: 'Doces e Gourmand', value: 'gourmand'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizTipo',
       title: 'Tipo Preferido (Quiz)',
-      description: 'Qual tipo de perfume se encaixa melhor no Quiz.',
-      type: 'string',
+      description: 'Qual tipo de perfume se encaixa melhor. Marque todos.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Árabe', value: 'arabe'},
@@ -417,7 +418,6 @@ export const perfumeType = defineType({
           {title: 'Nacional', value: 'nacional'},
           {title: 'Tanto Faz', value: 'tanto_faz'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),

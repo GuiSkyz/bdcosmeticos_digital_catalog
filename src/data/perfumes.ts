@@ -73,10 +73,10 @@ export interface Perfume {
   occasion?: Ocasiao;
   season?: Estacao;
 
-  // Quiz tags (5 dimensões)
-  quizVibe?: QuizVibe;
-  quizCenario?: QuizCenario;
-  quizPresenca?: QuizPresenca;
-  quizAroma?: QuizAroma;
-  quizTipo?: QuizTipo;
+  // Quiz tags (5 dimensões — suporta valores únicos ou múltiplos)
+  quizVibe?: QuizVibe | QuizVibe[];
+  quizCenario?: QuizCenario | QuizCenario[];
+  quizPresenca?: QuizPresenca | QuizPresenca[];
+  quizAroma?: QuizAroma | QuizAroma[];
+  quizTipo?: QuizTipo | QuizTipo[];
 }

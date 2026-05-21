@@ -12,7 +12,7 @@ import type { Perfume } from "@/data/perfumes";
 
 interface OlfactoryQuizProps {
   perfumes: Perfume[];
-  onComplete: (result: Perfume, answers: QuizAnswers) => void;
+  onComplete: (results: Perfume[], answers: QuizAnswers) => void;
 }
 
 export interface QuizAnswers {
@@ -193,42 +193,125 @@ const questions: QuizQuestion[] = [
 ];
 
 // ==========================================
-// Scoring Algorithm
+// Scoring Algorithm — 3 Camadas
 // ==========================================
 
-function findBestMatch(perfumes: Perfume[], answers: QuizAnswers): Perfume {
-  let bestScore = -1;
-  let bestPerfume = perfumes[0];
+// Helper: verifica se um campo quiz (string | string[]) contém o valor
+function hasQuizValue(field: string | string[] | undefined, value: string): boolean {
+  if (!field) return false;
+  if (Array.isArray(field)) return field.includes(value);
+  return field === value;
+}
 
-  for (const perfume of perfumes) {
+// Mapeamentos: atributos reais → dimensões do quiz
+const FAMILY_TO_AROMA: Record<string, string> = {
+  Amadeirado: "amadeirado",
+  Cítrico: "citrico",
+  Floral: "floral",
+  Frutal: "citrico",
+  Gourmand: "gourmand",
+  Oriental: "gourmand",
+  Aromático: "amadeirado",
+  Aquático: "citrico",
+  Fougère: "amadeirado",
+  Chipre: "amadeirado",
+};
+
+const SILLAGE_TO_PRESENCA: Record<string, string> = {
+  Discreta: "intima",
+  Moderada: "moderada",
+  Marcante: "moderada",
+  Intensa: "avassaladora",
+};
+
+const OCCASION_TO_CENARIO: Record<string, string> = {
+  "Dia a Dia": "passeio",
+  Trabalho: "trabalho",
+  Encontro: "encontro",
+  Formal: "trabalho",
+  Balada: "balada",
+  Assinatura: "trabalho",
+};
+
+const TIPO_TO_QUIZ: Record<string, string> = {
+  Árabe: "arabe",
+  Importado: "importado",
+  Nacional: "nacional",
+};
+
+function findTopMatches(perfumes: Perfume[], answers: QuizAnswers, count: number = 3): Perfume[] {
+  const scored = perfumes.map((perfume) => {
     let score = 0;
 
-    // Vibe match (peso 3 — mais importante, é a emoção)
-    if (perfume.quizVibe === answers.vibe) score += 3;
+    // ── Camada 1: Scoring Primário (quiz tags, suporte multi-valor) ──
 
-    // Cenário match (peso 2)
-    if (perfume.quizCenario === answers.cenario) score += 2;
+    // Vibe (peso 3)
+    if (hasQuizValue(perfume.quizVibe, answers.vibe)) score += 3;
 
-    // Presença match (peso 2)
-    if (perfume.quizPresenca === answers.presenca) score += 2;
+    // Aroma (peso 3)
+    if (hasQuizValue(perfume.quizAroma, answers.aroma)) score += 3;
 
-    // Aroma match (peso 3 — tão importante quanto a vibe)
-    if (perfume.quizAroma === answers.aroma) score += 3;
+    // Cenário (peso 2)
+    if (hasQuizValue(perfume.quizCenario, answers.cenario)) score += 2;
 
-    // Tipo match (peso 2 — preferência de origem)
-    if (answers.tipo === "tanto_faz" || perfume.quizTipo === "tanto_faz") {
-      score += 1; // bônus parcial se "tanto faz"
-    } else if (perfume.quizTipo === answers.tipo) {
+    // Presença (peso 2)
+    if (hasQuizValue(perfume.quizPresenca, answers.presenca)) score += 2;
+
+    // Tipo (peso 2, com lógica "tanto faz")
+    if (answers.tipo === "tanto_faz" || hasQuizValue(perfume.quizTipo, "tanto_faz")) {
+      score += 1;
+    } else if (hasQuizValue(perfume.quizTipo, answers.tipo)) {
       score += 2;
     }
 
-    if (score > bestScore) {
-      bestScore = score;
-      bestPerfume = perfume;
+    // ── Camada 2: Scoring Secundário (atributos reais como fallback) ──
+
+    if (perfume.olfactoryFamily && FAMILY_TO_AROMA[perfume.olfactoryFamily] === answers.aroma) {
+      score += 0.5;
     }
+    if (perfume.sillage && SILLAGE_TO_PRESENCA[perfume.sillage] === answers.presenca) {
+      score += 0.5;
+    }
+    if (perfume.occasion && OCCASION_TO_CENARIO[perfume.occasion] === answers.cenario) {
+      score += 0.5;
+    }
+    if (perfume.tipo && TIPO_TO_QUIZ[perfume.tipo] === answers.tipo && answers.tipo !== "tanto_faz") {
+      score += 0.5;
+    }
+
+    return { perfume, score };
+  });
+
+  // Ordena por score decrescente
+  scored.sort((a, b) => b.score - a.score);
+
+  // ── Camada 3: Seleção Aleatória Ponderada ──
+  // Pega o pool dos top candidatos (3x o count ou mín. 10)
+  const poolSize = Math.min(scored.length, Math.max(count * 3, 10));
+  const candidates = scored.slice(0, poolSize);
+
+  const selected: Perfume[] = [];
+  const remaining = [...candidates];
+
+  for (let i = 0; i < Math.min(count, remaining.length); i++) {
+    // Peso mínimo 0.1 para que todos tenham alguma chance
+    const totalWeight = remaining.reduce((sum, c) => sum + Math.max(c.score, 0.1), 0);
+    let random = Math.random() * totalWeight;
+
+    let selectedIdx = 0;
+    for (let j = 0; j < remaining.length; j++) {
+      random -= Math.max(remaining[j].score, 0.1);
+      if (random <= 0) {
+        selectedIdx = j;
+        break;
+      }
+    }
+
+    selected.push(remaining[selectedIdx].perfume);
+    remaining.splice(selectedIdx, 1);
   }
 
-  return bestPerfume;
+  return selected;
 }
 
 // ==========================================
@@ -253,8 +336,8 @@ export function OlfactoryQuiz({ perfumes, onComplete }: OlfactoryQuizProps) {
     if (step < questions.length - 1) {
       setStep(step + 1);
     } else {
-      const result = findBestMatch(perfumes, newAnswers);
-      onComplete(result, newAnswers);
+      const results = findTopMatches(perfumes, newAnswers, 3);
+      onComplete(results, newAnswers);
     }
   };
 

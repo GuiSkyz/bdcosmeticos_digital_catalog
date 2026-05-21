@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cinzel, Montserrat } from "next/font/google";
 import "./globals.css";
 
@@ -43,13 +43,16 @@ export const metadata: Metadata = {
     title: "BD Cosméticos | Alta Perfumaria Árabe",
     description: "BD Cosméticos — Alta perfumaria árabe. Descubra fragrâncias exclusivas.",
   },
-  themeColor: "#FAF7F5", // bd-cream
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
     title: "BD Cosm.",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#FAF7F5", // bd-cream
 };
 
 export default function RootLayout({

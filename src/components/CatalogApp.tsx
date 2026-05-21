@@ -37,7 +37,7 @@ const FAMILY_OPTIONS = [
 export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     const [view, setView] = useState<ViewState>("home");
     const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null);
-    const [quizResult, setQuizResult] = useState<Perfume | null>(null);
+    const [quizResults, setQuizResults] = useState<Perfume[] | null>(null);
     const [quizAnswers, setQuizAnswers] = useState<QuizAnswers | null>(null);
     const [displayMode, setDisplayMode] = useState<DisplayMode>("grid");
 
@@ -440,8 +440,8 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                             {/* Quiz Component */}
                             <OlfactoryQuiz
                                 perfumes={perfumes}
-                                onComplete={(result, answers) => {
-                                    setQuizResult(result);
+                                onComplete={(results, answers) => {
+                                    setQuizResults(results);
                                     setQuizAnswers(answers);
                                     setView("result");
                                     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -453,12 +453,13 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                     {/* ==========================================
               RESULT VIEW
               ========================================== */}
-                    {view === "result" && quizResult && (
+                    {view === "result" && quizResults && quizResults.length > 0 && (
                         <QuizResult
                             key="result"
-                            perfume={quizResult}
+                            perfumes={quizResults}
                             answers={quizAnswers ?? undefined}
-                            onExploreDetails={() => navigateToPDP(quizResult)}
+                            onExploreDetails={(perfume) => navigateToPDP(perfume)}
+                            settings={settings}
                         />
                     )}
 
