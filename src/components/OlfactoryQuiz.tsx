@@ -286,21 +286,32 @@ function findTopMatches(perfumes: Perfume[], answers: QuizAnswers, count: number
   scored.sort((a, b) => b.score - a.score);
 
   // ── Camada 3: Seleção Aleatória Ponderada ──
-  // Pega o pool dos top candidatos (3x o count ou mín. 10)
-  const poolSize = Math.min(scored.length, Math.max(count * 3, 10));
+
+  // Pool dinâmico: 15% do catálogo, mínimo 20, máximo 40
+  const poolSize = Math.min(scored.length, Math.max(Math.ceil(scored.length * 0.15), 20), 40);
   const candidates = scored.slice(0, poolSize);
 
+  // Adiciona ruído aleatório de ±20% ao score para embaralhar a cada execução
+  // Isso garante que mesmo com as mesmas respostas, a ordem mude
+  const jittered = candidates.map((c) => {
+    const noise = 0.8 + Math.random() * 0.4; // entre 0.8 e 1.2
+    return { ...c, jitteredScore: Math.max(c.score, 0.1) * noise };
+  });
+
+  // Re-ordena pelo score com ruído
+  jittered.sort((a, b) => b.jitteredScore - a.jitteredScore);
+
   const selected: Perfume[] = [];
-  const remaining = [...candidates];
+  const remaining = [...jittered];
 
   for (let i = 0; i < Math.min(count, remaining.length); i++) {
-    // Peso mínimo 0.1 para que todos tenham alguma chance
-    const totalWeight = remaining.reduce((sum, c) => sum + Math.max(c.score, 0.1), 0);
+    // Usa raiz quadrada para "achatar" a curva de peso — dá mais chance aos menos óbvios
+    const totalWeight = remaining.reduce((sum, c) => sum + Math.sqrt(c.jitteredScore), 0);
     let random = Math.random() * totalWeight;
 
     let selectedIdx = 0;
     for (let j = 0; j < remaining.length; j++) {
-      random -= Math.max(remaining[j].score, 0.1);
+      random -= Math.sqrt(remaining[j].jitteredScore);
       if (random <= 0) {
         selectedIdx = j;
         break;
