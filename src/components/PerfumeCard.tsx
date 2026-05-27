@@ -61,10 +61,10 @@ export function PerfumeCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <h3 className="text-lg md:text-xl font-serif text-bd-charcoal group-hover:text-bd-salmon transition-colors duration-300 truncate">
+              <h3 className="text-lg md:text-xl font-serif text-bd-charcoal group-hover:text-bd-salmon-text transition-colors duration-300 truncate">
                 {perfume.name}
               </h3>
-              <p className="text-[9px] text-bd-salmon uppercase tracking-[0.2em] font-bold mt-0.5">
+              <p className="text-[10px] text-bd-salmon-text uppercase tracking-[0.2em] font-bold mt-0.5">
                 {perfume.brand}
                 {perfume.tipo ? ` • ${perfume.tipo}` : ""}
                 {perfume.olfactoryFamily ? ` • ${perfume.olfactoryFamily}` : ""}
@@ -85,37 +85,37 @@ export function PerfumeCard({
                     size={16}
                     className={`transition-all duration-300 ${
                       isFavorite
-                        ? "fill-bd-salmon text-bd-salmon"
-                        : "text-bd-salmon/30 hover:text-bd-salmon"
+                        ? "fill-bd-salmon-text text-bd-salmon-text"
+                        : "text-bd-salmon/50 hover:text-bd-salmon-text"
                     }`}
                   />
                 </button>
               )}
               <ChevronRight
                 size={18}
-                className="text-bd-salmon/40 group-hover:text-bd-salmon group-hover:translate-x-1 
+                className="text-bd-salmon/50 group-hover:text-bd-salmon-text group-hover:translate-x-1 
                            transition-all duration-300"
               />
             </div>
           </div>
 
-          <p className="text-xs text-bd-warm-gray font-light leading-relaxed mt-2 line-clamp-2 hidden sm:block">
+          <p className="text-xs text-bd-warm-gray-text font-light leading-relaxed mt-2 line-clamp-2 hidden sm:block">
             {perfume.shortDescription}
           </p>
 
           {/* Quick Stats */}
           <div className="flex items-center gap-4 mt-2.5">
-            <span className="inline-flex items-center gap-1 text-[10px] text-bd-warm-gray">
-              <Clock size={11} className="text-bd-salmon/60" />
+            <span className="inline-flex items-center gap-1 text-[10px] text-bd-warm-gray-text">
+              <Clock size={11} className="text-bd-salmon-text/70" />
               {perfume.longevity ?? "—"}
             </span>
-            <span className="inline-flex items-center gap-1 text-[10px] text-bd-warm-gray">
-              <Wind size={11} className="text-bd-salmon/60" />
+            <span className="inline-flex items-center gap-1 text-[10px] text-bd-warm-gray-text">
+              <Wind size={11} className="text-bd-salmon-text/70" />
               {perfume.sillage ?? "—"}
             </span>
-            {perfume.preco && (
+            {(perfume.preco ?? 0) > 0 && (
               <span className="text-[11px] font-semibold text-bd-charcoal ml-auto">
-                {formatPrice(perfume.preco)}
+                {perfume.hasVariations ? `A partir de ${formatPrice(perfume.preco as number)}` : formatPrice(perfume.preco as number)}
               </span>
             )}
           </div>
@@ -131,7 +131,7 @@ export function PerfumeCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
       onClick={onClick}
-      className="group cursor-pointer max-w-[260px] mx-auto w-full relative"
+      className="group cursor-pointer max-w-[260px] mx-auto w-full relative flex flex-col h-full"
     >
       {/* Favorite button */}
       {onToggleFavorite && (
@@ -149,8 +149,8 @@ export function PerfumeCard({
             size={14}
             className={`transition-all duration-300 ${
               isFavorite
-                ? "fill-bd-salmon text-bd-salmon"
-                : "text-bd-warm-gray group-hover:text-bd-salmon"
+                ? "fill-bd-salmon-text text-bd-salmon-text"
+                : "text-bd-warm-gray-text group-hover:text-bd-salmon-text"
             }`}
           />
         </button>
@@ -172,21 +172,21 @@ export function PerfumeCard({
       </div>
 
       {/* Info */}
-      <div>
-        <h3 className="text-sm font-serif mb-0.5 text-bd-charcoal group-hover:text-bd-salmon transition-colors duration-300">
+      <div className="flex flex-col flex-1">
+        <h3 className="text-sm font-serif mb-0.5 text-bd-charcoal group-hover:text-bd-salmon-text transition-colors duration-300">
           {perfume.name}
         </h3>
-        <p className="text-[8px] text-bd-salmon uppercase tracking-[0.2em] font-bold mb-1">
+        <p className="text-[10px] text-bd-salmon-text uppercase tracking-[0.2em] font-bold mb-1">
           {perfume.brand}
           {perfume.tipo ? ` • ${perfume.tipo}` : ""}
           {perfume.concentracao ? ` • ${perfume.concentracao}` : ""}
         </p>
-        <p className="text-[11px] text-bd-warm-gray line-clamp-2 font-light leading-snug">
+        <p className="text-[11px] text-bd-warm-gray-text line-clamp-2 font-light leading-snug">
           {perfume.shortDescription}
         </p>
-        {perfume.preco && (
-          <p className="text-xs font-semibold text-bd-charcoal mt-1.5">
-            {formatPrice(perfume.preco)}
+        {(perfume.preco ?? 0) > 0 && (
+          <p className="mt-auto pt-2 text-xs font-semibold text-bd-charcoal">
+            {perfume.hasVariations ? `A partir de ${formatPrice(perfume.preco as number)}` : formatPrice(perfume.preco as number)}
           </p>
         )}
       </div>

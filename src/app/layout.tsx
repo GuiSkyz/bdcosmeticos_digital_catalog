@@ -17,12 +17,22 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "BD Cosméticos | Alta Perfumaria Árabe",
-  description:
-    "BD Cosméticos — Alta perfumaria árabe. Descubra fragrâncias exclusivas e encontre sua assinatura olfativa perfeita.",
-  keywords: ["perfumaria", "perfume árabe", "alta perfumaria", "BD Cosméticos", "fragrâncias"],
-};
+export const revalidate = 0;
+
+import { client } from "@/sanity/lib/client";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await client.fetch(`*[_type == "siteSettings"][0] {
+    catalogTitle,
+    catalogDescription
+  }`);
+
+  return {
+    title: settings?.catalogTitle || "BD Cosméticos | Alta Perfumaria",
+    description: settings?.catalogDescription || "Descubra fragrâncias exclusivas.",
+    keywords: ["perfumaria", "perfume", "alta perfumaria", "BD Cosméticos", "fragrâncias"],
+  };
+}
 
 export default function RootLayout({
   children,
@@ -34,7 +44,9 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${cinzel.variable} ${montserrat.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

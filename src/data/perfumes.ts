@@ -59,6 +59,7 @@ export interface Perfume {
   concentracao?: Concentracao;
   volumes?: string[];
   preco?: number;
+  hasVariations?: boolean;
 
   // Olfactory (dereferenced notes)
   olfactoryFamily?: string;

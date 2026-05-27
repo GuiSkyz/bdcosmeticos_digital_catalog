@@ -76,8 +76,8 @@ function PerformanceBlock({
                  flex flex-col items-center justify-center
                  hover:shadow-lg hover:border-bd-salmon/30 transition-all duration-300"
     >
-      <Icon size={22} className="mx-auto mb-3 text-bd-salmon" />
-      <p className="text-[10px] uppercase text-bd-warm-gray font-bold tracking-wider mb-1">
+      <Icon size={22} className="mx-auto mb-3 text-bd-salmon-text" />
+      <p className="text-[10px] uppercase text-bd-warm-gray-text font-bold tracking-wider mb-1">
         {label}
       </p>
       <p className="text-sm text-bd-charcoal font-medium line-clamp-2 px-1">{value}</p>
@@ -176,8 +176,8 @@ export function ProductDetailPage({
       >
         <button
           onClick={onBack}
-          className="flex items-center gap-2 text-bd-warm-gray mb-10 md:mb-14
-                     hover:text-bd-salmon transition-all duration-300 
+          className="flex items-center gap-2 text-bd-warm-gray-text mb-10 md:mb-14
+                     hover:text-bd-salmon-text transition-all duration-300 
                      uppercase text-[10px] tracking-widest font-bold group cursor-pointer"
         >
           <ArrowLeft
@@ -214,8 +214,8 @@ export function ProductDetailPage({
                     size={18}
                     className={`transition-all duration-300 ${
                       isFavorite
-                        ? "fill-bd-salmon text-bd-salmon"
-                        : "text-bd-warm-gray hover:text-bd-salmon"
+                        ? "fill-bd-salmon-text text-bd-salmon-text"
+                        : "text-bd-warm-gray-text hover:text-bd-salmon-text"
                     }`}
                   />
                 </button>
@@ -226,7 +226,7 @@ export function ProductDetailPage({
                            shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer"
                 aria-label="Compartilhar"
               >
-                <Share2 size={18} className="text-bd-warm-gray hover:text-bd-salmon transition-colors duration-300" />
+                <Share2 size={18} className="text-bd-warm-gray-text hover:text-bd-salmon-text transition-colors duration-300" />
               </button>
             </div>
 
@@ -278,7 +278,7 @@ export function ProductDetailPage({
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif mb-3 text-bd-charcoal">
               {perfume.name}
             </h1>
-            <p className="text-bd-salmon uppercase tracking-[0.3em] text-xs font-bold mb-4">
+            <p className="text-bd-salmon-text uppercase tracking-[0.3em] text-xs font-bold mb-4">
               {perfume.brand}
               {perfume.olfactoryFamily ? ` • ${perfume.olfactoryFamily}` : ""}
             </p>
@@ -311,11 +311,12 @@ export function ProductDetailPage({
               )}
             </div>
 
-            {/* Price */}
-            {perfume.preco && (
-              <p className="text-2xl font-serif text-bd-charcoal mb-6">
-                {formatPrice(perfume.preco)}
-              </p>
+            {(perfume.preco ?? 0) > 0 && (
+              <div className="mt-6 mb-6">
+                <span className="text-2xl font-serif text-bd-charcoal font-semibold">
+                  {perfume.hasVariations ? `A partir de ${formatPrice(perfume.preco as number)}` : formatPrice(perfume.preco as number)}
+                </span>
+              </div>
             )}
           </motion.div>
 
@@ -324,7 +325,7 @@ export function ProductDetailPage({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="text-lg md:text-xl italic text-bd-warm-gray mb-8 
+            className="text-lg md:text-xl italic text-bd-warm-gray-text mb-8 
                        border-l-4 border-bd-salmon pl-6 leading-relaxed font-light"
           >
             &ldquo;{perfume.tagline}&rdquo;
@@ -335,7 +336,7 @@ export function ProductDetailPage({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="text-sm text-bd-warm-gray leading-relaxed mb-10 font-light"
+            className="text-sm text-bd-warm-gray-text leading-relaxed mb-10 font-light"
           >
             {perfume.fullDescription}
           </motion.p>
@@ -350,7 +351,7 @@ export function ProductDetailPage({
             className="mb-10"
           >
             <div className="flex items-center gap-2 mb-6">
-              <Droplets size={16} className="text-bd-salmon" />
+              <Droplets size={16} className="text-bd-salmon-text" />
               <h3 className="text-xs uppercase tracking-[0.3em] font-bold text-bd-charcoal">
                 Pirâmide Olfativa
               </h3>
@@ -359,7 +360,7 @@ export function ProductDetailPage({
             <div className="space-y-6">
               {/* Top Notes */}
               <div className="pyramid-section">
-                <p className="text-[10px] uppercase tracking-widest text-bd-salmon font-bold mb-2">
+                <p className="text-[10px] uppercase tracking-widest text-bd-salmon-text font-bold mb-2">
                   Notas de Topo
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -371,7 +372,7 @@ export function ProductDetailPage({
 
               {/* Heart Notes */}
               <div className="pyramid-section">
-                <p className="text-[10px] uppercase tracking-widest text-bd-salmon font-bold mb-2">
+                <p className="text-[10px] uppercase tracking-widest text-bd-salmon-text font-bold mb-2">
                   Notas de Coração
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -383,7 +384,7 @@ export function ProductDetailPage({
 
               {/* Base Notes */}
               <div className="pyramid-section">
-                <p className="text-[10px] uppercase tracking-widest text-bd-salmon font-bold mb-2">
+                <p className="text-[10px] uppercase tracking-widest text-bd-salmon-text font-bold mb-2">
                   Notas de Base
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -438,7 +439,7 @@ export function ProductDetailPage({
         >
           <Separator className="mb-12 bg-bd-salmon/15" />
           <div className="text-center mb-10">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-bd-salmon font-bold mb-2">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-bd-salmon-text font-bold mb-2">
               Você também pode gostar
             </p>
             <h3 className="text-2xl font-serif text-bd-charcoal">
@@ -463,10 +464,10 @@ export function ProductDetailPage({
                     alt={p.name}
                   />
                 </div>
-                <h4 className="text-sm font-serif text-bd-charcoal group-hover:text-bd-salmon transition-colors duration-300">
+                <h4 className="text-sm font-serif text-bd-charcoal group-hover:text-bd-salmon-text transition-colors duration-300">
                   {p.name}
                 </h4>
-                <p className="text-[9px] text-bd-salmon uppercase tracking-widest font-bold">
+                <p className="text-[10px] text-bd-salmon-text uppercase tracking-widest font-bold">
                   {p.brand}
                 </p>
               </motion.div>

@@ -37,9 +37,11 @@ const FAMILY_OPTIONS = [
 export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     const [view, setView] = useState<ViewState>("home");
     const [selectedPerfume, setSelectedPerfume] = useState<Perfume | null>(null);
-    const [quizResult, setQuizResult] = useState<Perfume | null>(null);
+    const [quizResults, setQuizResults] = useState<Perfume[] | null>(null);
     const [quizAnswers, setQuizAnswers] = useState<QuizAnswers | null>(null);
     const [displayMode, setDisplayMode] = useState<DisplayMode>("grid");
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 12;
 
     // Search & Filters
     const [searchQuery, setSearchQuery] = useState("");
@@ -98,7 +100,20 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
         setFilterFamily(null);
         setShowFavoritesOnly(false);
         setSearchQuery("");
+        setCurrentPage(1);
     };
+
+    // Reset page to 1 when filters change
+    useMemo(() => {
+        setCurrentPage(1);
+    }, [searchQuery, filterGenero, filterTipo, filterFamily, showFavoritesOnly]);
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredPerfumes.length / ITEMS_PER_PAGE);
+    const paginatedPerfumes = filteredPerfumes.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
 
     const navigateToPDP = (perfume: Perfume) => {
         setSelectedPerfume(perfume);
@@ -109,6 +124,14 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     const navigateHome = () => {
         setView("home");
         window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const scrollToCatalog = () => {
+        const catalogElement = document.getElementById("catalogo");
+        if (catalogElement) {
+            const y = catalogElement.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top: y, behavior: "smooth" });
+        }
     };
 
     return (
@@ -140,14 +163,14 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                             <HeroSection onStartQuiz={() => setView("quiz")} />
 
                             {/* Section Header */}
-                            <section className="container mx-auto px-6 md:px-8 pt-20 pb-4">
+                            <section id="catalogo" className="container mx-auto px-6 md:px-8 pt-20 pb-4">
                                 <motion.div
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ duration: 0.6, delay: 0.2 }}
                                     className="text-center mb-10"
                                 >
-                                    <p className="text-[10px] uppercase tracking-[0.4em] text-bd-salmon font-bold mb-3">
+                                    <p className="text-[10px] uppercase tracking-[0.4em] text-bd-salmon-text font-bold mb-3">
                                         Coleção Exclusiva
                                     </p>
                                     <h2 className="text-3xl md:text-4xl font-serif text-bd-charcoal">
@@ -164,21 +187,21 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                 >
                                     {/* Search */}
                                     <div className="relative mb-4">
-                                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-bd-warm-gray" />
+                                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-bd-warm-gray-text" />
                                         <input
                                             type="text"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             placeholder="Buscar por nome, marca ou família..."
                                             className="w-full pl-11 pr-10 py-3 rounded-2xl border border-bd-salmon/15 bg-bd-cream/30
-                                                       text-sm text-bd-charcoal placeholder:text-bd-warm-gray/60 
+                                                       text-sm text-bd-charcoal placeholder:text-bd-warm-gray-text/70 
                                                        focus:outline-none focus:border-bd-salmon/40 focus:bg-white
                                                        transition-all duration-300"
                                         />
                                         {searchQuery && (
                                             <button
                                                 onClick={() => setSearchQuery("")}
-                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-bd-warm-gray hover:text-bd-salmon cursor-pointer"
+                                                className="absolute right-4 top-1/2 -translate-y-1/2 text-bd-warm-gray-text hover:text-bd-salmon-text cursor-pointer"
                                             >
                                                 <X size={14} />
                                             </button>
@@ -192,8 +215,8 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold
                                                        border transition-all duration-300 cursor-pointer
                                                        ${showFilters
-                                                    ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon"
-                                                    : "border-bd-salmon/15 text-bd-warm-gray hover:text-bd-salmon hover:border-bd-salmon/30"
+                                                    ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon-text"
+                                                    : "border-bd-salmon/15 text-bd-warm-gray-text hover:text-bd-salmon-text hover:border-bd-salmon/30"
                                                 }`}
                                         >
                                             <SlidersHorizontal size={12} />
@@ -205,8 +228,8 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold
                                                        border transition-all duration-300 cursor-pointer
                                                        ${showFavoritesOnly
-                                                    ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon"
-                                                    : "border-bd-salmon/15 text-bd-warm-gray hover:text-bd-salmon hover:border-bd-salmon/30"
+                                                    ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon-text"
+                                                    : "border-bd-salmon/15 text-bd-warm-gray-text hover:text-bd-salmon-text hover:border-bd-salmon/30"
                                                 }`}
                                         >
                                             <Heart size={12} className={showFavoritesOnly ? "fill-bd-salmon" : ""} />
@@ -216,7 +239,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                         {hasActiveFilters && (
                                             <button
                                                 onClick={clearFilters}
-                                                className="text-[10px] uppercase tracking-widest text-bd-salmon font-bold 
+                                                className="text-[10px] uppercase tracking-widest text-bd-salmon-text font-bold 
                                                            hover:underline cursor-pointer ml-2"
                                             >
                                                 Limpar filtros
@@ -231,7 +254,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                            transition-all duration-300 cursor-pointer
                                                            ${displayMode === "grid"
                                                         ? "bg-white text-bd-charcoal shadow-sm"
-                                                        : "text-bd-warm-gray hover:text-bd-charcoal"
+                                                        : "text-bd-warm-gray-text hover:text-bd-charcoal"
                                                     }`}
                                             >
                                                 <LayoutGrid size={13} />
@@ -243,7 +266,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                            transition-all duration-300 cursor-pointer
                                                            ${displayMode === "list"
                                                         ? "bg-white text-bd-charcoal shadow-sm"
-                                                        : "text-bd-warm-gray hover:text-bd-charcoal"
+                                                        : "text-bd-warm-gray-text hover:text-bd-charcoal"
                                                     }`}
                                             >
                                                 <List size={13} />
@@ -265,7 +288,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4 p-4 bg-bd-cream/40 rounded-2xl border border-bd-salmon/10">
                                                     {/* Gênero */}
                                                     <div>
-                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray font-bold block mb-2">
+                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray-text font-bold block mb-2">
                                                             Gênero
                                                         </label>
                                                         <div className="flex flex-wrap gap-2">
@@ -288,7 +311,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
 
                                                     {/* Tipo */}
                                                     <div>
-                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray font-bold block mb-2">
+                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray-text font-bold block mb-2">
                                                             Tipo
                                                         </label>
                                                         <div className="flex flex-wrap gap-2">
@@ -311,7 +334,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
 
                                                     {/* Família */}
                                                     <div>
-                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray font-bold block mb-2">
+                                                        <label className="text-[10px] uppercase tracking-widest text-bd-warm-gray-text font-bold block mb-2">
                                                             Família Olfativa
                                                         </label>
                                                         <div className="flex flex-wrap gap-2">
@@ -346,12 +369,12 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                         animate={{ opacity: 1 }}
                                         className="text-center py-16"
                                     >
-                                        <p className="text-bd-warm-gray font-light text-sm mb-2">
+                                        <p className="text-bd-warm-gray-text font-light text-sm mb-2">
                                             Nenhum perfume encontrado.
                                         </p>
                                         <button
                                             onClick={clearFilters}
-                                            className="text-bd-salmon text-xs uppercase tracking-widest font-bold hover:underline cursor-pointer"
+                                            className="text-bd-salmon-text text-xs uppercase tracking-widest font-bold hover:underline cursor-pointer"
                                         >
                                             Limpar filtros
                                         </button>
@@ -367,7 +390,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                 transition={{ duration: 0.3 }}
                                                 className="max-w-4xl mx-auto grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8"
                                             >
-                                                {filteredPerfumes.map((perfume, index) => (
+                                                {paginatedPerfumes.map((perfume, index) => (
                                                     <PerfumeCard
                                                         key={perfume._id}
                                                         perfume={perfume}
@@ -388,7 +411,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                 transition={{ duration: 0.3 }}
                                                 className="max-w-3xl mx-auto flex flex-col gap-3"
                                             >
-                                                {filteredPerfumes.map((perfume, index) => (
+                                                {paginatedPerfumes.map((perfume, index) => (
                                                     <PerfumeCard
                                                         key={perfume._id}
                                                         perfume={perfume}
@@ -399,6 +422,53 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                                         onToggleFavorite={toggleFavorite}
                                                     />
                                                 ))}
+                                            </motion.div>
+                                        )}
+
+                                        {/* Pagination Controls */}
+                                        {totalPages > 1 && (
+                                            <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="mt-12 flex flex-col items-center gap-6"
+                                            >
+                                                <div className="flex justify-center items-center gap-4">
+                                                    <button
+                                                        onClick={() => {
+                                                            setCurrentPage(p => Math.max(1, p - 1));
+                                                            scrollToCatalog();
+                                                        }}
+                                                        disabled={currentPage === 1}
+                                                        className="px-4 py-2 rounded-full border border-bd-salmon/20 text-xs uppercase tracking-widest font-bold text-bd-charcoal disabled:opacity-30 disabled:cursor-not-allowed hover:bg-bd-salmon/5 transition-colors"
+                                                    >
+                                                        Anterior
+                                                    </button>
+                                                    <span className="text-xs font-semibold text-bd-warm-gray-text">
+                                                        Página {currentPage} de {totalPages}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => {
+                                                            setCurrentPage(p => Math.min(totalPages, p + 1));
+                                                            scrollToCatalog();
+                                                        }}
+                                                        disabled={currentPage === totalPages}
+                                                        className="px-4 py-2 rounded-full border border-bd-salmon/20 text-xs uppercase tracking-widest font-bold text-bd-charcoal disabled:opacity-30 disabled:cursor-not-allowed hover:bg-bd-salmon/5 transition-colors"
+                                                    >
+                                                        Próxima
+                                                    </button>
+                                                </div>
+
+                                                {currentPage > 1 && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setCurrentPage(1);
+                                                            scrollToCatalog();
+                                                        }}
+                                                        className="text-[10px] uppercase tracking-widest font-bold text-bd-warm-gray-text hover:text-bd-charcoal transition-colors underline decoration-bd-warm-gray-text/30 hover:decoration-bd-charcoal underline-offset-4"
+                                                    >
+                                                        Voltar ao Início
+                                                    </button>
+                                                )}
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -426,13 +496,13 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                 transition={{ duration: 0.5 }}
                                 className="text-center mb-14"
                             >
-                                <p className="text-[10px] uppercase tracking-[0.4em] text-bd-salmon font-bold mb-3">
+                                <p className="text-[10px] uppercase tracking-[0.4em] text-bd-salmon-text font-bold mb-3">
                                     Consultoria Digital
                                 </p>
                                 <h2 className="text-3xl md:text-4xl font-serif text-bd-charcoal mb-2">
                                     Consultoria Olfativa
                                 </h2>
-                                <p className="text-bd-warm-gray text-sm font-light">
+                                <p className="text-bd-warm-gray-text text-sm font-light">
                                     Encontre a sua assinatura em segundos
                                 </p>
                             </motion.div>
@@ -440,8 +510,8 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                             {/* Quiz Component */}
                             <OlfactoryQuiz
                                 perfumes={perfumes}
-                                onComplete={(result, answers) => {
-                                    setQuizResult(result);
+                                onComplete={(results, answers) => {
+                                    setQuizResults(results);
                                     setQuizAnswers(answers);
                                     setView("result");
                                     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -453,12 +523,13 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                     {/* ==========================================
               RESULT VIEW
               ========================================== */}
-                    {view === "result" && quizResult && (
+                    {view === "result" && quizResults && quizResults.length > 0 && (
                         <QuizResult
                             key="result"
-                            perfume={quizResult}
+                            perfumes={quizResults}
                             answers={quizAnswers ?? undefined}
-                            onExploreDetails={() => navigateToPDP(quizResult)}
+                            onExploreDetails={(perfume) => navigateToPDP(perfume)}
+                            settings={settings}
                         />
                     )}
 

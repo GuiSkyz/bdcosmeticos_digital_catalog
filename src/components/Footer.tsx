@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { Separator } from "@/components/ui/separator";
 
@@ -7,12 +8,17 @@ export function Footer() {
     <footer className="mt-20">
       <Separator className="bg-bd-salmon/10" />
       <div className="py-16 md:py-20 text-center px-8">
-        {/* Logo Mark */}
-        <p className="font-serif text-4xl tracking-[0.4em] text-bd-salmon mb-4">
-          BD
-        </p>
+        <div className="flex justify-center mb-6">
+          <Image 
+            src="/brand-logo-v2.png" 
+            alt="BD Cosméticos Logo" 
+            width={200} 
+            height={200} 
+            className="object-contain w-auto h-20 md:h-28"
+          />
+        </div>
         <p className="text-[10px] uppercase tracking-[0.3em] text-bd-warm-gray mb-6">
-          Alta Perfumaria Árabe
+          Alta Perfumaria Importada
         </p>
         <Separator className="max-w-24 mx-auto bg-bd-salmon/20 mb-6" />
         <p className="text-[10px] uppercase tracking-widest text-bd-warm-gray/60">

@@ -2,11 +2,13 @@ import { client } from "@/sanity/lib/client";
 import { CatalogApp } from "@/components/CatalogApp";
 import type { Perfume, SiteSettings } from "@/data/perfumes";
 
+export const revalidate = 0; // Removido ISR para forçar carregamento 100% em tempo real
+
 // GROQ — perfumes com notas dereferenciadas e novos campos
 const PERFUMES_QUERY = `*[_type == "perfume"] | order(name asc) {
   _id,
   name,
-  brand,
+  "brand": coalesce(brand->name, brand),
   slug,
   tagline,
   shortDescription,
@@ -17,11 +19,12 @@ const PERFUMES_QUERY = `*[_type == "perfume"] | order(name asc) {
   tipo,
   concentracao,
   volumes,
-  preco,
+  "preco": coalesce(preco, (variations | order(preco asc))[0].preco),
+  "hasVariations": count(variations) > 1,
   olfactoryFamily,
-  topNotes[]->{ _id, name, category },
-  heartNotes[]->{ _id, name, category },
-  baseNotes[]->{ _id, name, category },
+  topNotes,
+  heartNotes,
+  baseNotes,
   longevity,
   sillage,
   occasion,

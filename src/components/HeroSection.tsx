@@ -48,7 +48,7 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
           className="text-5xl md:text-7xl lg:text-8xl font-serif mb-6 text-bd-charcoal leading-tight"
         >
           Luxo em cada{" "}
-          <span className="text-bd-salmon italic">Gota</span>
+          <span className="text-bd-salmon-text italic">Gota</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -56,9 +56,9 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="max-w-2xl mx-auto text-bd-warm-gray font-light leading-relaxed mb-12 text-base md:text-lg"
+          className="max-w-2xl mx-auto text-bd-warm-gray-text font-light leading-relaxed mb-12 text-base md:text-lg"
         >
-          Nossa curadoria árabe traz o que há de mais raro na perfumaria mundial.
+          Nossa curadoria importada traz o que há de mais raro na perfumaria mundial.
           Deixe-nos guiar seus sentidos até a sua assinatura perfeita.
         </motion.p>
 
@@ -75,12 +75,12 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
           >
             <span
               className="border-b-2 border-bd-salmon text-[11px] uppercase tracking-[0.3em] py-2 
-                         text-bd-charcoal hover:text-bd-salmon transition-colors duration-300 font-semibold"
+                         text-bd-charcoal hover:text-bd-salmon-text transition-colors duration-300 font-semibold"
             >
               Iniciar Consultoria Digital
             </span>
             <motion.span
-              className="text-bd-salmon"
+              className="text-bd-salmon-text"
               animate={{ x: [0, 4, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >

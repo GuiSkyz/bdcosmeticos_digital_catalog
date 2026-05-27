@@ -29,14 +29,14 @@ export const siteSettingsType = defineType({
       name: 'catalogTitle',
       title: 'Título do Catálogo',
       type: 'string',
-      initialValue: 'BD Cosméticos | Alta Perfumaria Árabe',
+      initialValue: 'BD Cosméticos | Alta Perfumaria Importada',
     }),
     defineField({
       name: 'catalogDescription',
       title: 'Descrição SEO do Catálogo',
       type: 'text',
       rows: 3,
-      initialValue: 'BD Cosméticos — Alta perfumaria árabe. Descubra fragrâncias exclusivas e encontre sua assinatura olfativa perfeita.',
+      initialValue: 'BD Cosméticos — Alta perfumaria importada. Descubra fragrâncias exclusivas e encontre sua assinatura olfativa perfeita.',
     }),
   ],
   preview: {

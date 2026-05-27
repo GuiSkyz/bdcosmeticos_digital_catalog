@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { motion } from "framer-motion";
 import { Droplets } from "lucide-react";
@@ -15,7 +16,7 @@ export function Navbar({ onLogoClick, onQuizClick }: NavbarProps) {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="w-full py-5 px-6 md:px-10 flex justify-between items-center 
+      className="w-full py-2 px-6 md:px-10 flex justify-between items-center 
                  border-b border-bd-salmon/10 sticky top-0 z-50 
                  bg-white/90 backdrop-blur-md"
     >
@@ -24,15 +25,13 @@ export function Navbar({ onLogoClick, onQuizClick }: NavbarProps) {
         onClick={onLogoClick}
         className="flex items-center gap-3 group cursor-pointer"
       >
-        <div
-          className="w-9 h-9 rounded-xl bg-bd-cream flex items-center justify-center 
-                        group-hover:bg-bd-salmon/20 transition-colors duration-300"
-        >
-          <Droplets size={16} className="text-bd-salmon" />
-        </div>
-        <span className="text-lg md:text-xl font-serif tracking-[0.2em] text-bd-charcoal">
-          BD COSMÉTICOS
-        </span>
+        <Image 
+          src="/brand-logo-v2.png" 
+          alt="BD Cosméticos Logo" 
+          width={120} 
+          height={120} 
+          className="object-contain hover:opacity-80 transition-opacity duration-300 w-auto h-12 md:h-16"
+        />
       </button>
 
       {/* CTA */}
