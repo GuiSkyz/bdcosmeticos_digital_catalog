@@ -39,7 +39,8 @@ export const perfumeType = defineType({
     defineField({
       name: 'brand',
       title: 'Marca',
-      type: 'string',
+      type: 'reference',
+      to: [{type: 'brand'}],
       validation: (rule) => rule.required(),
       group: 'basic',
     }),
@@ -52,6 +53,20 @@ export const perfumeType = defineType({
         maxLength: 96,
       },
       validation: (rule) => rule.required(),
+      group: 'basic',
+    }),
+    defineField({
+      name: 'isFeatured',
+      title: 'Destaque na Home?',
+      type: 'boolean',
+      initialValue: false,
+      group: 'basic',
+    }),
+    defineField({
+      name: 'isNewRelease',
+      title: 'Lançamento?',
+      type: 'boolean',
+      initialValue: false,
       group: 'basic',
     }),
     defineField({
@@ -137,29 +152,75 @@ export const perfumeType = defineType({
       group: 'details',
     }),
     defineField({
-      name: 'volumes',
-      title: 'Volumes Disponíveis',
+      name: 'variations',
+      title: 'Variações (Volume, Preço e Estoque)',
       type: 'array',
-      of: [{type: 'string'}],
-      options: {
-        list: [
-          {title: '30ml', value: '30ml'},
-          {title: '50ml', value: '50ml'},
-          {title: '75ml', value: '75ml'},
-          {title: '100ml', value: '100ml'},
-          {title: '125ml', value: '125ml'},
-          {title: '200ml', value: '200ml'},
-        ],
-      },
       group: 'details',
-    }),
-    defineField({
-      name: 'preco',
-      title: 'Preço (R$)',
-      type: 'number',
-      description: 'Valor em reais. Ex: 289.90',
-      validation: (rule) => rule.positive(),
-      group: 'details',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'volume',
+              title: 'Volume',
+              type: 'string',
+              options: {
+                list: [
+                  {title: '30ml', value: '30ml'},
+                  {title: '50ml', value: '50ml'},
+                  {title: '75ml', value: '75ml'},
+                  {title: '100ml', value: '100ml'},
+                  {title: '125ml', value: '125ml'},
+                  {title: '150ml', value: '150ml'},
+                  {title: '200ml', value: '200ml'},
+                ],
+              },
+              validation: (rule) => rule.required(),
+            },
+            {
+              name: 'preco',
+              title: 'Preço (R$)',
+              type: 'number',
+              description: 'Valor em reais. Ex: 289.90',
+              validation: (rule) => rule.required().positive(),
+            },
+            {
+              name: 'status',
+              title: 'Disponibilidade',
+              type: 'string',
+              options: {
+                list: [
+                  {title: 'Pronta Entrega', value: 'pronta_entrega'},
+                  {title: 'Sob Encomenda', value: 'sob_encomenda'},
+                  {title: 'Esgotado', value: 'esgotado'},
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'pronta_entrega',
+              validation: (rule) => rule.required(),
+            },
+          ],
+          preview: {
+            select: {
+              volume: 'volume',
+              preco: 'preco',
+              status: 'status',
+            },
+            prepare({volume, preco, status}) {
+              const statusLabels: Record<string, string> = {
+                pronta_entrega: '✅ Pronta Entrega',
+                sob_encomenda: '⏳ Sob Encomenda',
+                esgotado: '❌ Esgotado'
+              };
+              return {
+                title: `${volume} - R$ ${preco}`,
+                subtitle: status ? statusLabels[status] : '',
+              }
+            }
+          }
+        }
+      ],
+      validation: (rule) => rule.min(1).error('Adicione pelo menos uma variação de volume/preço.'),
     }),
 
     // ─── PIRÂMIDE OLFATIVA (Referências Relacionais) ────────
@@ -188,21 +249,30 @@ export const perfumeType = defineType({
       name: 'topNotes',
       title: 'Notas de Topo',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'notaOlfativa'}]}],
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
       group: 'olfactory',
     }),
     defineField({
       name: 'heartNotes',
       title: 'Notas de Coração',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'notaOlfativa'}]}],
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
       group: 'olfactory',
     }),
     defineField({
       name: 'baseNotes',
       title: 'Notas de Fundo',
       type: 'array',
-      of: [{type: 'reference', to: [{type: 'notaOlfativa'}]}],
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
       group: 'olfactory',
     }),
 
@@ -271,12 +341,13 @@ export const perfumeType = defineType({
       group: 'performance',
     }),
 
-    // ─── QUIZ OLFATIVO (4 Dimensões) ────────────────────────
+    // ─── QUIZ OLFATIVO (5 Dimensões — Multi-valor) ────────────
     defineField({
       name: 'quizVibe',
-      title: 'Vibe (Quiz)',
-      description: 'Qual sentimento o perfume evoca?',
-      type: 'string',
+      title: 'Vibes (Quiz)',
+      description: 'Quais sentimentos o perfume evoca? Marque todos que se aplicam.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Elegante e Poderoso(a)', value: 'elegante'},
@@ -284,15 +355,15 @@ export const perfumeType = defineType({
           {title: 'Misterioso(a) e Sedutor(a)', value: 'misterioso'},
           {title: 'Aconchegante e Confortável', value: 'aconchegante'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizCenario',
-      title: 'Cenário (Quiz)',
-      description: 'Qual o melhor cenário para este perfume?',
-      type: 'string',
+      title: 'Cenários (Quiz)',
+      description: 'Quais cenários combinam com este perfume? Marque todos.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Trabalho', value: 'trabalho'},
@@ -300,30 +371,30 @@ export const perfumeType = defineType({
           {title: 'Passeio / Dia a Dia', value: 'passeio'},
           {title: 'Balada / Festa', value: 'balada'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizPresenca',
       title: 'Presença (Quiz)',
-      description: 'Nível de projeção do perfume no Quiz.',
-      type: 'string',
+      description: 'Níveis de projeção que descrevem este perfume. Marque todos.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Íntima — Só quem abraça sente', value: 'intima'},
           {title: 'Moderada — Rastro sutil', value: 'moderada'},
           {title: 'Avassaladora — Sente antes de ver', value: 'avassaladora'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizAroma',
-      title: 'Aroma Principal (Quiz)',
-      description: 'Família aromática simplificada para o Quiz.',
-      type: 'string',
+      title: 'Aromas (Quiz)',
+      description: 'Famílias aromáticas simplificadas. Marque todas que se aplicam.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Cítricos e Frutas', value: 'citrico'},
@@ -331,15 +402,15 @@ export const perfumeType = defineType({
           {title: 'Madeiras e Florestas', value: 'amadeirado'},
           {title: 'Doces e Gourmand', value: 'gourmand'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
     defineField({
       name: 'quizTipo',
       title: 'Tipo Preferido (Quiz)',
-      description: 'Qual tipo de perfume se encaixa melhor no Quiz.',
-      type: 'string',
+      description: 'Qual tipo de perfume se encaixa melhor. Marque todos.',
+      type: 'array',
+      of: [{type: 'string'}],
       options: {
         list: [
           {title: 'Árabe', value: 'arabe'},
@@ -347,7 +418,6 @@ export const perfumeType = defineType({
           {title: 'Nacional', value: 'nacional'},
           {title: 'Tanto Faz', value: 'tanto_faz'},
         ],
-        layout: 'radio',
       },
       group: 'quiz',
     }),
@@ -355,7 +425,7 @@ export const perfumeType = defineType({
   preview: {
     select: {
       title: 'name',
-      subtitle: 'brand',
+      subtitle: 'brand.name',
       media: 'image',
     },
   },

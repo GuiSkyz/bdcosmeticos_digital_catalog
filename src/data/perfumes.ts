@@ -60,12 +60,15 @@ export interface Perfume {
   volumes?: string[];
   preco?: number;
   hasVariations?: boolean;
+  variations?: { volume: string; preco: number; status: string }[];
+  isFeatured?: boolean;
+  isNewRelease?: boolean;
 
   // Olfactory (dereferenced notes)
   olfactoryFamily?: string;
-  topNotes?: NotaOlfativa[];
-  heartNotes?: NotaOlfativa[];
-  baseNotes?: NotaOlfativa[];
+  topNotes?: (NotaOlfativa | string)[];
+  heartNotes?: (NotaOlfativa | string)[];
+  baseNotes?: (NotaOlfativa | string)[];
 
   // Performance (padronizado)
   longevity?: Fixacao;
@@ -73,10 +76,10 @@ export interface Perfume {
   occasion?: Ocasiao;
   season?: Estacao;
 
-  // Quiz tags (5 dimensões)
-  quizVibe?: QuizVibe;
-  quizCenario?: QuizCenario;
-  quizPresenca?: QuizPresenca;
-  quizAroma?: QuizAroma;
-  quizTipo?: QuizTipo;
+  // Quiz tags (5 dimensões — suporta valores únicos ou múltiplos)
+  quizVibe?: QuizVibe | QuizVibe[];
+  quizCenario?: QuizCenario | QuizCenario[];
+  quizPresenca?: QuizPresenca | QuizPresenca[];
+  quizAroma?: QuizAroma | QuizAroma[];
+  quizTipo?: QuizTipo | QuizTipo[];
 }

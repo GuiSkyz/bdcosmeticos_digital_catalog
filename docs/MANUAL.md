@@ -1,6 +1,6 @@
 # Manual do Catálogo Digital — BD Cosméticos
 
-> **Versão:** 2.1.0  
+> **Versão:** 2.2.0  
 > **Tecnologias:** Next.js 16, TypeScript, Sanity CMS, Tailwind CSS  
 > **Público-alvo:** Desenvolvedores que irão dar manutenção no projeto
 
@@ -113,20 +113,16 @@ Cada perfume no CMS tem **5 abas** no editor:
 
 | Aba | Campos |
 |-----|--------|
-| **Informações Básicas** | Nome, Marca, Slug, Tagline, Descrição Curta, Descrição Completa, Foto Principal, Galeria |
-| **Detalhes do Produto** | Gênero (radio), Tipo (radio: Árabe/Importado/Nacional), Concentração (radio), Volumes (multi-select), Preço |
+| **Informações Básicas** | Nome, Marca (Referência), Slug, Destaque, Lançamento, Tagline, Descrição Curta, Descrição Completa, Foto Principal, Galeria |
+| **Detalhes do Produto** | Gênero, Tipo (Árabe/Importado/Nacional), Concentração, **Variações** (array com Volume, Preço e Status de Disponibilidade) |
 | **Pirâmide Olfativa** | Família Olfativa (dropdown), Notas de Topo/Coração/Fundo (referências) |
 | **Performance** | Fixação (radio), Projeção (radio), Ocasião (dropdown), Estação (dropdown) |
 | **Tags do Quiz** | Vibe, Cenário, Presença, Aroma, Tipo Preferido (todos radio) |
 
-### 4.2. Nota Olfativa (`notaOlfativaType`)
+### 4.2. Marcas e Notas Olfativas (`brandType` e `notaOlfativaType`)
 
-Documento separado para cada nota (Bergamota, Sândalo, etc). Campos:
-- **Nome** (obrigatório)
-- **Categoria** (dropdown: Cítrica, Floral, Amadeirada, etc.)
-- **Descrição** (texto curto)
-
-> **Por que separado?** Porque a mesma nota (ex: "Sândalo") pode aparecer em vários perfumes. Em vez de digitar "Sândalo" toda vez (com risco de erro), você seleciona de uma lista.
+Documentos separados para Marcas (ex: Lattafa, Dior) e Notas (ex: Bergamota, Sândalo).
+- **Por que separados?** Porque a mesma marca ou nota aparece em vários perfumes. Em vez de digitar manualmente toda vez (com risco de erro de digitação), você as cadastra uma vez só e apenas "seleciona" na hora de criar o perfume.
 
 ### 4.3. Configurações do Site (`siteSettingsType`)
 
@@ -199,12 +195,12 @@ Tem botão de favoritar (coração).
 
 A página mais rica do catálogo:
 - Galeria de imagens com thumbnails
-- Tags visuais (gênero, tipo, concentração, volume)
-- Preço em destaque
+- Tags visuais (gênero, tipo, concentração)
+- **Variações Listadas** (Preço, Volume e Etiqueta de Estoque dinâmicas)
 - Pirâmide olfativa (notas como badges)
 - Performance grid (fixação, projeção, ocasião, estação)
-- Botão WhatsApp (número dinâmico via settings)
-- Botão Compartilhar (Web Share API)
+- Botão WhatsApp (com número dinâmico e mensagem automática)
+- Botões de Compartilhar e Favoritar
 - Seção "Perfumes Similares" (mesma família olfativa)
 
 ---
@@ -284,14 +280,14 @@ Filtros são **cumulativos** — busca + gênero + família funcionam juntos.
 ## 10. Como Adicionar um Novo Perfume
 
 1. Acesse `http://localhost:3000/studio` (ou a URL de produção do Studio)
-2. No menu lateral, clique em **Perfumes**
-3. Clique em **"+"** para criar novo
+2. No menu lateral, se a **Marca** do perfume ainda não existir, crie ela primeiro em "Marcas".
+3. Clique em **Perfumes** e depois no botão **"+"** para criar um novo.
 4. Preencha as 5 abas:
-   - **Básicas**: Nome, Marca, clique em "Generate" no Slug, descrições, foto principal
-   - **Detalhes**: Gênero, **Tipo (Árabe/Importado/Nacional)**, Concentração, Volumes, Preço
-   - **Pirâmide**: Selecione as notas (se a nota não existir, crie em "Notas Olfativas" primeiro)
-   - **Performance**: Fixação, Projeção, Ocasião, Estação
-   - **Quiz**: Preencha os 5 campos de quiz — Vibe, Cenário, Presença, Aroma e **Tipo Preferido** (necessário para o quiz funcionar)
+   - **Básicas**: Nome, selecione a Marca, clique em "Generate" no Slug, Destaques, descrições e fotos.
+   - **Detalhes**: Gênero, Tipo, Concentração e crie as **Variações** (Adicione o volume, o preço e defina o status de estoque para cada variação).
+   - **Pirâmide**: Selecione as notas olfativas.
+   - **Performance**: Fixação, Projeção, Ocasião, Estação.
+   - **Quiz**: Preencha os 5 campos (Vibe, Cenário, Presença, Aroma e Tipo Preferido).
 5. Clique em **Publish**
 
 > **Dica:** Se a nota olfativa que você precisa não existe, vá em "Notas Olfativas" no menu lateral e crie antes.
