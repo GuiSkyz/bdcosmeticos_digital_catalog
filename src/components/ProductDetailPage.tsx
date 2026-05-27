@@ -418,12 +418,12 @@ export function ProductDetailPage({
                   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`
                 )
               }
-              className="w-full bg-bd-charcoal text-white py-6 h-auto rounded-2xl text-xs uppercase 
-                         tracking-[0.2em] font-bold hover:bg-bd-salmon shadow-xl transition-all 
-                         duration-300 hover:shadow-2xl cursor-pointer"
+              className="w-full bg-bd-charcoal text-white py-4 sm:py-6 h-auto rounded-2xl text-[10px] sm:text-xs uppercase 
+                         tracking-widest sm:tracking-[0.2em] font-bold hover:bg-bd-salmon shadow-xl transition-all 
+                         duration-300 hover:shadow-2xl cursor-pointer whitespace-normal text-center px-4"
             >
-              <Send size={14} className="mr-2" />
-              Consultar Disponibilidade via WhatsApp
+              <Send size={14} className="mr-2 shrink-0 inline-block" />
+              <span>Consultar via WhatsApp</span>
             </Button>
           </motion.div>
         </div>
