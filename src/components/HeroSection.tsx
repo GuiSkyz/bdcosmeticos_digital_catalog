@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Feather } from "lucide-react";
+import Image from "next/image";
 
 interface HeroSectionProps {
   onStartQuiz: () => void;
@@ -10,6 +11,20 @@ interface HeroSectionProps {
 export function HeroSection({ onStartQuiz }: HeroSectionProps) {
   return (
     <section className="relative py-28 md:py-36 px-8 text-center bg-bd-cream overflow-hidden grain-overlay">
+      {/* Background Image */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <Image 
+          src="/hero-bg.png" 
+          alt="Luxury Background" 
+          fill 
+          priority
+          className="object-cover"
+        />
+        {/* Glass Overlay */}
+        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bd-cream/50 to-bd-cream"></div>
+      </div>
+
       {/* Decorative floating elements */}
       <motion.div
         className="absolute top-16 left-[10%] w-20 h-20 rounded-full bg-bd-salmon/5"
@@ -28,16 +43,21 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
       />
 
       <div className="relative z-10">
-        {/* Small decorative icon */}
+        {/* Small decorative logo */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex justify-center mb-8"
+          className="flex justify-center mb-6 md:mb-8"
         >
-          <div className="w-14 h-14 rounded-2xl bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm">
-            <Feather size={22} className="text-bd-salmon" />
-          </div>
+          <Image 
+            src="/brand-logo-v2.png" 
+            alt="BD Cosméticos" 
+            width={180} 
+            height={180} 
+            className="object-contain w-auto h-12 md:h-16 drop-shadow-sm"
+            priority
+          />
         </motion.div>
 
         {/* Title */}
