@@ -20,9 +20,9 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
           priority
           className="object-cover"
         />
-        {/* Glass Overlay */}
-        <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bd-cream/50 to-bd-cream"></div>
+        {/* Subtle Glass Overlay (15%) */}
+        <div className="absolute inset-0 bg-white/15 backdrop-blur-[2px]"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bd-cream/30 to-bd-cream"></div>
       </div>
 
       {/* Decorative floating elements */}
