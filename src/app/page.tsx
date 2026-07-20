@@ -2,7 +2,7 @@ import { client } from "@/sanity/lib/client";
 import { CatalogApp } from "@/components/CatalogApp";
 import type { Perfume, SiteSettings } from "@/data/perfumes";
 
-export const revalidate = 3600; // Alterado para ISR (1 hora) para melhor performance
+export const revalidate = 60; // ISR de 60 segundos para refletir edições no Sanity rapidamente
 
 // GROQ — perfumes com notas dereferenciadas e novos campos
 const PERFUMES_QUERY = `*[_type == "perfume" && isActive != false] | order(name asc) {

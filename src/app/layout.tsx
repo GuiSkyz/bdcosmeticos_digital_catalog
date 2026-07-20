@@ -17,7 +17,7 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 import { client } from "@/sanity/lib/client";
 

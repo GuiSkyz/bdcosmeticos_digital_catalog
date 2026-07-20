@@ -3,7 +3,7 @@ import { ClientWrapper } from "./ClientWrapper";
 import type { Perfume, SiteSettings } from "@/data/perfumes";
 import { notFound } from "next/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 // GROQ — perfumes com notas dereferenciadas e novos campos
 const PERFUMES_QUERY = `*[_type == "perfume" && isActive != false] | order(name asc) {
