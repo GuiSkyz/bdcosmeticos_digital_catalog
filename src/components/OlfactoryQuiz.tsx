@@ -429,7 +429,6 @@ export function OlfactoryQuiz({ perfumes, onComplete }: OlfactoryQuizProps) {
                              transition-all duration-300 group flex justify-between items-center cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
-                    <span className="text-xl flex-shrink-0">{opt.emoji}</span>
                     <div>
                       <span className="text-sm font-semibold text-bd-charcoal block mb-1">
                         {opt.label}

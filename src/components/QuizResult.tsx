@@ -121,8 +121,8 @@ export function QuizResult({ perfumes, answers, onExploreDetails, settings }: Qu
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.45 }}
-              className="text-sm text-bd-warm-gray leading-relaxed font-light mb-8 
-                         border-l-4 border-bd-salmon pl-4 text-left mx-auto max-w-sm italic"
+              className="text-sm text-bd-warm-gray-text leading-relaxed font-light mb-8 
+                         text-center mx-auto max-w-sm italic"
             >
               {justification}
             </motion.p>

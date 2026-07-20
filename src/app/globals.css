@@ -54,7 +54,7 @@
   --color-bd-salmon-light: #E8D5C8;
   --color-bd-salmon-dark: #B89A8A;
   --color-bd-salmon-text: #8A6046;
-  --color-bd-warm-gray-text: #6A5C55;
+  --color-bd-warm-gray-text: #554943;
 
   /* Radius */
   --radius-sm: calc(var(--radius) * 0.6);

@@ -70,6 +70,14 @@ export const perfumeType = defineType({
       group: 'basic',
     }),
     defineField({
+      name: 'isActive',
+      title: 'Ativo no Catálogo?',
+      description: 'Desative para ocultar o produto do catálogo sem excluí-lo.',
+      type: 'boolean',
+      initialValue: true,
+      group: 'basic',
+    }),
+    defineField({
       name: 'tagline',
       title: 'Frase de Efeito',
       type: 'string',

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight, Clock, Wind, Heart } from "lucide-react";
 import type { Perfume } from "@/data/perfumes";
@@ -8,7 +9,8 @@ import { urlFor } from "@/sanity/lib/image";
 
 interface PerfumeCardProps {
   perfume: Perfume;
-  onClick: () => void;
+  href?: string;
+  onClick?: () => void;
   index: number;
   layout?: "grid" | "list";
   isFavorite?: boolean;
@@ -22,6 +24,7 @@ function formatPrice(value?: number) {
 
 export function PerfumeCard({
   perfume,
+  href,
   onClick,
   index,
   layout = "grid",
@@ -32,17 +35,20 @@ export function PerfumeCard({
     ? urlFor(perfume.image).width(400).url()
     : "/placeholder.png";
 
+  const defaultHref = `/perfume/${perfume.slug?.current || perfume._id}`;
+  const linkHref = href || defaultHref;
+
   if (layout === "list") {
     return (
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
-        onClick={onClick}
-        className="group cursor-pointer flex items-center gap-6 md:gap-8 p-4 md:p-5 
-                   rounded-2xl border border-transparent hover:border-bd-salmon/20 
-                   hover:bg-bd-cream/50 hover:shadow-lg transition-all duration-300"
-      >
+      <Link href={linkHref} onClick={onClick} className="block w-full">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
+          className="group cursor-pointer flex items-center gap-6 md:gap-8 p-4 md:p-5 
+                     rounded-2xl border border-transparent hover:border-bd-salmon/20 
+                     hover:bg-bd-cream/50 hover:shadow-lg transition-all duration-300"
+        >
         {/* Image */}
         <div
           className="w-20 h-24 md:w-24 md:h-28 flex-shrink-0 bg-bd-cream rounded-xl 
@@ -120,19 +126,20 @@ export function PerfumeCard({
             )}
           </div>
         </div>
-      </motion.div>
+        </motion.div>
+      </Link>
     );
   }
 
   // Grid layout — e-commerce vitrine style
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
-      onClick={onClick}
-      className="group cursor-pointer max-w-[260px] mx-auto w-full relative flex flex-col h-full"
-    >
+    <Link href={linkHref} onClick={onClick} className="block w-full h-full max-w-[260px] mx-auto">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: index * 0.1, ease: "easeOut" }}
+        className="group cursor-pointer w-full relative flex flex-col h-full"
+      >
       {/* Favorite button */}
       {onToggleFavorite && (
         <button
@@ -190,6 +197,7 @@ export function PerfumeCard({
           </p>
         )}
       </div>
-    </motion.div>
+      </motion.div>
+    </Link>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Feather } from "lucide-react";
+import { Feather, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 interface HeroSectionProps {
@@ -9,8 +9,11 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onStartQuiz }: HeroSectionProps) {
+  // Configuração para o efeito de máquina de escrever
+  const subtitle = "Nossa curadoria importada traz o que há de mais raro na perfumaria mundial. Deixe-nos guiar seus sentidos até a sua assinatura perfeita.";
+  
   return (
-    <section className="relative py-28 md:py-36 px-8 text-center bg-bd-cream overflow-hidden grain-overlay">
+    <section className="relative py-28 md:py-36 px-8 text-center bg-bd-cream overflow-hidden grain-overlay flex flex-col justify-center min-h-[90vh]">
       {/* Background Image */}
       <div className="absolute inset-0 w-full h-full z-0">
         <Image 
@@ -25,24 +28,9 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-bd-cream/30 to-bd-cream"></div>
       </div>
 
-      {/* Decorative floating elements */}
-      <motion.div
-        className="absolute top-16 left-[10%] w-20 h-20 rounded-full bg-bd-salmon/5"
-        animate={{ y: [0, -12, 0], scale: [1, 1.05, 1] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.div
-        className="absolute bottom-20 right-[15%] w-32 h-32 rounded-full bg-bd-salmon/5"
-        animate={{ y: [0, 15, 0], scale: [1, 1.08, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-      />
-      <motion.div
-        className="absolute top-1/2 right-[8%] w-14 h-14 rounded-full bg-bd-salmon/3"
-        animate={{ y: [0, -8, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-      />
 
-      <div className="relative z-10">
+
+      <div className="relative z-10 flex flex-col items-center flex-1 justify-center">
         {/* Small decorative logo */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -71,22 +59,21 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
           <span className="text-bd-salmon-text italic">Gota</span>
         </motion.h1>
 
-        {/* Subtitle */}
+        {/* Subtitle with Fade-In effect */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="max-w-2xl mx-auto text-bd-warm-gray-text font-light leading-relaxed mb-12 text-base md:text-lg"
+          className="max-w-2xl mx-auto text-bd-warm-gray-text font-light leading-relaxed mb-12 text-base md:text-lg inline-block"
         >
-          Nossa curadoria importada traz o que há de mais raro na perfumaria mundial.
-          Deixe-nos guiar seus sentidos até a sua assinatura perfeita.
+          {subtitle}
         </motion.p>
 
         {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
+          transition={{ duration: 0.8, delay: 0.8 }} // Delay reduzido
           className="flex justify-center"
         >
           <button
@@ -109,6 +96,23 @@ export function HeroSection({ onStartQuiz }: HeroSectionProps) {
           </button>
         </motion.div>
       </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 1.2 }} // Aparece logo após o CTA
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-bd-warm-gray-text/60"
+      >
+        <span className="text-[9px] uppercase tracking-[0.3em] font-medium">Descubra</span>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <ChevronDown size={18} strokeWidth={1.5} />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
+

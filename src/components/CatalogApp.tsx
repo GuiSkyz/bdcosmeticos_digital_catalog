@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { LayoutGrid, List, Search, X, SlidersHorizontal, Heart } from "lucide-react";
+import { LayoutGrid, List, Search, X, SlidersHorizontal, Heart, ImageOff } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { HeroSection } from "@/components/HeroSection";
 import { PerfumeCard } from "@/components/PerfumeCard";
@@ -23,7 +24,7 @@ interface CatalogAppProps {
     settings?: SiteSettings | null;
 }
 
-type ViewState = "home" | "quiz" | "result" | "pdp";
+type ViewState = "home" | "quiz" | "result";
 type DisplayMode = "grid" | "list";
 
 // Filter options
@@ -42,6 +43,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     const [displayMode, setDisplayMode] = useState<DisplayMode>("grid");
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 12;
+    const router = useRouter();
 
     // Search & Filters
     const [searchQuery, setSearchQuery] = useState("");
@@ -50,6 +52,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     const [filterTipo, setFilterTipo] = useState<string | null>(null);
     const [filterFamily, setFilterFamily] = useState<string | null>(null);
     const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+    const [hideNoPhoto, setHideNoPhoto] = useState(false);
 
     // Favorites
     const { toggleFavorite, isFavorite } = useFavorites();
@@ -89,16 +92,22 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
             result = result.filter((p) => isFavorite(p._id));
         }
 
-        return result;
-    }, [perfumes, searchQuery, filterGenero, filterTipo, filterFamily, showFavoritesOnly, isFavorite]);
+        // Ocultar sem foto
+        if (hideNoPhoto) {
+            result = result.filter((p) => !!p.image);
+        }
 
-    const hasActiveFilters = !!filterGenero || !!filterTipo || !!filterFamily || showFavoritesOnly;
+        return result;
+    }, [perfumes, searchQuery, filterGenero, filterTipo, filterFamily, showFavoritesOnly, hideNoPhoto, isFavorite]);
+
+    const hasActiveFilters = !!filterGenero || !!filterTipo || !!filterFamily || showFavoritesOnly || hideNoPhoto;
 
     const clearFilters = () => {
         setFilterGenero(null);
         setFilterTipo(null);
         setFilterFamily(null);
         setShowFavoritesOnly(false);
+        setHideNoPhoto(false);
         setSearchQuery("");
         setCurrentPage(1);
     };
@@ -106,7 +115,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     // Reset page to 1 when filters change
     useMemo(() => {
         setCurrentPage(1);
-    }, [searchQuery, filterGenero, filterTipo, filterFamily, showFavoritesOnly]);
+    }, [searchQuery, filterGenero, filterTipo, filterFamily, showFavoritesOnly, hideNoPhoto]);
 
     // Pagination logic
     const totalPages = Math.ceil(filteredPerfumes.length / ITEMS_PER_PAGE);
@@ -116,13 +125,13 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
     );
 
     const navigateToPDP = (perfume: Perfume) => {
-        setSelectedPerfume(perfume);
-        setView("pdp");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        const slug = perfume.slug?.current || perfume._id;
+        router.push(`/perfume/${slug}`);
     };
 
     const navigateHome = () => {
         setView("home");
+        window.history.pushState(null, "", window.location.pathname);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
@@ -193,6 +202,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
                                             placeholder="Buscar por nome, marca ou família..."
+                                            aria-label="Buscar perfumes"
                                             className="w-full pl-11 pr-10 py-3 rounded-2xl border border-bd-salmon/15 bg-bd-cream/30
                                                        text-sm text-bd-charcoal placeholder:text-bd-warm-gray-text/70 
                                                        focus:outline-none focus:border-bd-salmon/40 focus:bg-white
@@ -212,7 +222,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                     <div className="flex flex-wrap items-center gap-2">
                                         <button
                                             onClick={() => setShowFilters(!showFilters)}
-                                            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold
+                                            className={`inline-flex items-center gap-1.5 px-4 py-3 min-h-[44px] rounded-full text-[10px] uppercase tracking-widest font-bold
                                                        border transition-all duration-300 cursor-pointer
                                                        ${showFilters
                                                     ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon-text"
@@ -225,7 +235,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
 
                                         <button
                                             onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-                                            className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest font-bold
+                                            className={`inline-flex items-center gap-1.5 px-4 py-3 min-h-[44px] rounded-full text-[10px] uppercase tracking-widest font-bold
                                                        border transition-all duration-300 cursor-pointer
                                                        ${showFavoritesOnly
                                                     ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon-text"
@@ -234,6 +244,19 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                         >
                                             <Heart size={12} className={showFavoritesOnly ? "fill-bd-salmon" : ""} />
                                             Favoritos
+                                        </button>
+
+                                        <button
+                                            onClick={() => setHideNoPhoto(!hideNoPhoto)}
+                                            className={`inline-flex items-center gap-1.5 px-4 py-3 min-h-[44px] rounded-full text-[10px] uppercase tracking-widest font-bold
+                                                       border transition-all duration-300 cursor-pointer
+                                                       ${hideNoPhoto
+                                                    ? "border-bd-salmon bg-bd-salmon/10 text-bd-salmon-text"
+                                                    : "border-bd-salmon/15 text-bd-warm-gray-text hover:text-bd-salmon-text hover:border-bd-salmon/30"
+                                                }`}
+                                        >
+                                            <ImageOff size={12} />
+                                            {hideNoPhoto ? "Com Foto" : "Ocultar Sem Foto"}
                                         </button>
 
                                         {hasActiveFilters && (
@@ -250,7 +273,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                         <div className="ml-auto inline-flex items-center gap-1 p-1 rounded-xl bg-bd-cream border border-bd-salmon/10">
                                             <button
                                                 onClick={() => setDisplayMode("grid")}
-                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest font-bold 
+                                                className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-lg text-[10px] uppercase tracking-widest font-bold 
                                                            transition-all duration-300 cursor-pointer
                                                            ${displayMode === "grid"
                                                         ? "bg-white text-bd-charcoal shadow-sm"
@@ -262,7 +285,7 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                                             </button>
                                             <button
                                                 onClick={() => setDisplayMode("list")}
-                                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase tracking-widest font-bold 
+                                                className={`flex items-center gap-1.5 px-3 py-2 min-h-[44px] rounded-lg text-[10px] uppercase tracking-widest font-bold 
                                                            transition-all duration-300 cursor-pointer
                                                            ${displayMode === "list"
                                                         ? "bg-white text-bd-charcoal shadow-sm"
@@ -530,22 +553,6 @@ export function CatalogApp({ perfumes, settings }: CatalogAppProps) {
                             answers={quizAnswers ?? undefined}
                             onExploreDetails={(perfume) => navigateToPDP(perfume)}
                             settings={settings}
-                        />
-                    )}
-
-                    {/* ==========================================
-              PDP VIEW
-              ========================================== */}
-                    {view === "pdp" && selectedPerfume && (
-                        <ProductDetailPage
-                            key="pdp"
-                            perfume={selectedPerfume}
-                            onBack={navigateHome}
-                            allPerfumes={perfumes}
-                            onNavigate={navigateToPDP}
-                            settings={settings}
-                            isFavorite={isFavorite(selectedPerfume._id)}
-                            onToggleFavorite={toggleFavorite}
                         />
                     )}
                 </AnimatePresence>

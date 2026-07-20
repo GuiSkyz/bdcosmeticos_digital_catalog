@@ -1,8 +1,9 @@
 import { client } from "@/sanity/lib/client";
-import { CatalogApp } from "@/components/CatalogApp";
+import { ClientWrapper } from "./ClientWrapper";
 import type { Perfume, SiteSettings } from "@/data/perfumes";
+import { notFound } from "next/navigation";
 
-export const revalidate = 3600; // Alterado para ISR (1 hora) para melhor performance
+export const revalidate = 3600;
 
 // GROQ — perfumes com notas dereferenciadas e novos campos
 const PERFUMES_QUERY = `*[_type == "perfume" && isActive != false] | order(name asc) {
@@ -48,11 +49,23 @@ const SETTINGS_QUERY = `*[_type == "siteSettings"][0] {
   catalogDescription
 }`;
 
-export default async function HomePage() {
+export default async function PerfumePage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
+
   const [perfumes, settings] = await Promise.all([
     client.fetch<Perfume[]>(PERFUMES_QUERY),
     client.fetch<SiteSettings | null>(SETTINGS_QUERY),
   ]);
 
-  return <CatalogApp perfumes={perfumes} settings={settings} />;
+  const perfume = perfumes.find((p) => p.slug?.current === slug || p._id === slug);
+
+  if (!perfume) {
+    console.log("NOT FOUND ERROR!");
+    console.log("Target slug:", slug);
+    console.log("Available slugs:", perfumes.map(p => p.slug?.current).join(", "));
+    notFound();
+  }
+
+  return <ClientWrapper perfume={perfume} allPerfumes={perfumes} settings={settings} />;
 }
